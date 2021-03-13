@@ -31,11 +31,11 @@ public class Home extends AppCompatActivity implements View.OnClickListener{
 
         switch (v.getId()){
             case R.id.button1:
-                i = new Intent(this,Tes.class);
+                i = new Intent(this,OpsiTes.class);
                 startActivity(i);
                 break;
             case R.id.button2:
-                i = new Intent(this,Isoman.class);
+                i = new Intent(this,OpsiIsoman.class);
                 startActivity(i);
                 break;
             case R.id.button3:
