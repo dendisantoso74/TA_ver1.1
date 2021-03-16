@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TA_ver1.1</string>
+    <string name="mapbox_access_token">pk.eyJ1Ijoia2VuMjExIiwiYSI6ImNrbWMwenA2MzFydTEycGxhdnV3YmtnZjUifQ.Sen8sJYovqkb6sUIDXWorA</string>
 </resources>
