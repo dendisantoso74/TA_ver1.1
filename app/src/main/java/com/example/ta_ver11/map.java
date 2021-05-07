@@ -151,24 +151,30 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                 List<Feature> symbolLayerIconFeatureList = new ArrayList<>();
                 enableLocationComponent(style);
 
+
+                origin = Point.fromLngLat(origin.longitude(),origin.latitude());
+                destinationMarker = mapboxMap.addMarker(new MarkerOptions().position(new LatLng(-6.1308865129809575, 106.7373814475735)));
+                destination = Point.fromLngLat(106.7373814475735, -6.1308865129809575);
+                BtnStart.setEnabled(true);
+                getRoute(origin,destination);
                 //initLayers(style);
 
-                mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
-                    @Override
-                    public boolean onMapClick(@NonNull LatLng point) {
-                        if(destinationMarker != null) {
-                            mapboxMap.removeMarker(destinationMarker);
-                        }
-                        destinationMarker = mapboxMap.addMarker(new MarkerOptions().position(point));
-                        destination = Point.fromLngLat(point.getLongitude(),point.getLatitude());
-                        origin = Point.fromLngLat(origin.longitude(),origin.latitude());
-                        BtnStart.setEnabled(true);
-                        BtnStart.setBackgroundResource(R.color.mapbox_blue);
-
-                        getRoute(origin,destination);
-                        return true;
-                    }
-                });
+//                mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
+//                    @Override
+//                    public boolean onMapClick(@NonNull LatLng point) {
+//                        if(destinationMarker != null) {
+//                            mapboxMap.removeMarker(destinationMarker);
+//                        }
+//                        destinationMarker = mapboxMap.addMarker(new MarkerOptions().position(new LatLng(-6.171599675110603, 106.8376071052925)));
+//                        destination = Point.fromLngLat(106.8376071052925, -6.171599675110603);
+//                        origin = Point.fromLngLat(origin.longitude(),origin.latitude());
+//                        BtnStart.setEnabled(true);
+//                        BtnStart.setBackgroundResource(R.color.mapbox_blue);
+//
+//                        getRoute(origin,destination);
+//                        return true;
+//                    }
+//                });
             }
         });
 
