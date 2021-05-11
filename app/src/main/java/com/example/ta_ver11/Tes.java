@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 public class Tes extends AppCompatActivity {
     String items[] = new String[] {"RS Cinta Kasih Tzu cHI" , "RS Ciputra Citra Garden City" , "RS Pondok Indah Puri Indah" , "RS Royal Taruma" , "Siloam Hospital Lippo Village"};
+    String items2[] = new String[] {"1km" , "11km" , "22km" , "22km" , "33km"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,7 @@ public class Tes extends AppCompatActivity {
 
         ListView listView =(ListView) findViewById(R.id.view);
         ArrayAdapter<String> adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,items);
+
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

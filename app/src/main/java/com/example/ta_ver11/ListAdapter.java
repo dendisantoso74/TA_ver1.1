@@ -35,14 +35,9 @@ public class ListAdapter extends ArrayAdapter {
             v = vi.inflate(R.layout.custom_listview,null);
         }
 
-
-
         if (getItem(position) != null) {
             TextView tt1 = (TextView) v.findViewById(R.id.text_headline);
             TextView tt2 = (TextView) v.findViewById(R.id.text_subhead);
-
-
-
 
             if (tt1 != null) {
                 tt1.setText((Headline[position]));
@@ -52,9 +47,7 @@ public class ListAdapter extends ArrayAdapter {
                 tt2.setText(Subhead[position]);
             }
 
-
         }
-
         return v;
     }
 
