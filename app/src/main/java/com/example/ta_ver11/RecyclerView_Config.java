@@ -31,9 +31,12 @@ public class RecyclerView_Config {
         private TextView mCoordinat;
         private TextView mNama;
         private TextView mJarak;
-//        private TextView mCategory;
+        private TextView mLon;
+        private TextView mLat;
 
         private String key;
+        private String lat;
+        private String lon;
 
         public BookItemView(ViewGroup parent){
             super (LayoutInflater.from(mContext).
@@ -41,7 +44,8 @@ public class RecyclerView_Config {
 
             mCoordinat = (TextView) itemView.findViewById(R.id.title_txtView);
             mNama = (TextView) itemView.findViewById(R.id.author_txtView);
-//            mCategory = (TextView) itemView.findViewById(R.id.category_txtView);
+            mLon = (TextView) itemView.findViewById(R.id.category_txtView);
+            mLat = (TextView) itemView.findViewById(R.id.lat_txtView);
             mJarak = (TextView) itemView.findViewById(R.id.isbn_txtView);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +53,11 @@ public class RecyclerView_Config {
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, map.class);
                     intent.putExtra("key",key);
+//                    intent.putExtra("lat",lat);
+//                    intent.putExtra("lon",lon);
+                    intent.putExtra("lon",mLon.getText().toString());
+                    intent.putExtra("lat",mLat.getText().toString());
+                    intent.putExtra("coordinat",mCoordinat.getText().toString());
                     intent.putExtra("nama",mNama.getText().toString());
                     mContext.startActivity(intent);
                     Toast.makeText(mContext,"Tujuan: " + mNama.getText(), Toast.LENGTH_SHORT).show();
@@ -59,9 +68,13 @@ public class RecyclerView_Config {
         public void bind(Lokasi lokasi, String key){
             mCoordinat.setText(lokasi.getCoordinat());
             mNama.setText(lokasi.getNama());
-//            mCategory.setText(book.getCategory_name());
+            mLon.setText(lokasi.getLon());
+            mLat.setText(lokasi.getLat());
             mJarak.setText(lokasi.getJarak());
+
             this.key = key;
+//            this.lat = lat;
+//            this.lon = lon;
         }
     }
     class BooksAdapter extends RecyclerView.Adapter<BookItemView>{

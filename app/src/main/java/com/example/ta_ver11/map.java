@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mapbox.android.core.permissions.PermissionsListener;
@@ -58,6 +59,12 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
     private Marker destinationMarker;
     private static final String TAG = "opsiIsoman";
     private int status = 0;
+    private String coor = "-6.1217, 106.7324";
+//    private String lat = "empty";
+//    private String lon = "empty";
+    private double lat = -6.119267764452542 ;
+    private double lon = 106.72941738153077;
+
 
 
     @Override
@@ -67,6 +74,18 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
 
         setContentView(R.layout.activity_map);
+
+        TextView coordinattxt = findViewById(R.id.coortxt);
+        //String coor = "-6.1217, 106.7324";
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            coor = extras.getString("coordinat");
+            lat = Double.parseDouble(extras.getString("lat"));
+            lon = Double.parseDouble(extras.getString("lon"));
+        }
+
+        coordinattxt.setText(coor);
 
         mapView = (MapView) findViewById(R.id.mapView);
 
@@ -153,8 +172,8 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
 
 
                 origin = Point.fromLngLat(origin.longitude(),origin.latitude());
-                destinationMarker = mapboxMap.addMarker(new MarkerOptions().position(new LatLng(-6.1308865129809575, 106.7373814475735)));
-                destination = Point.fromLngLat(106.7373814475735, -6.1308865129809575);
+                destinationMarker = mapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
+                destination = Point.fromLngLat(lon, lat);
                 BtnStart.setEnabled(true);
                 getRoute(origin,destination);
                 //initLayers(style);
