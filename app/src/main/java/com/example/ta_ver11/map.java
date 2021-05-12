@@ -125,7 +125,7 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
 
             locationComponent.setLocationComponentEnabled(true);
 
-            locationComponent.setCameraMode(CameraMode.TRACKING);
+            //locationComponent.setCameraMode(CameraMode.TRACKING);
 
             locationComponent.setRenderMode(RenderMode.COMPASS);
             this.origin = Point.fromLngLat(locationComponent.getLastKnownLocation().getLongitude(),
