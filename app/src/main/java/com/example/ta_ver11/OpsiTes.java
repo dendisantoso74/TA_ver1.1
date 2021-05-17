@@ -36,12 +36,12 @@ public class OpsiTes extends AppCompatActivity implements View.OnClickListener {
                 i = new Intent(this,Tes.class);
                 startActivity(i);
                 break;
-            case R.id.buttonAntigen:
+            case R.id.buttonPcr:
                 i = new Intent(this,Tes.class);
                 startActivity(i);
                 break;
-            case R.id.buttonPcr:
-                i = new Intent(this,Tes.class);
+            case R.id.buttonAntigen:
+                i = new Intent(this,Tes_tcm.class);
                 startActivity(i);
                 break;
         }
