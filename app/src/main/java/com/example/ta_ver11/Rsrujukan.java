@@ -10,6 +10,7 @@ import java.util.List;
 
 public class Rsrujukan extends AppCompatActivity {
 
+    String namadb = "rumah_sakit";
     private RecyclerView mRecyclerView;
 
     @Override
@@ -18,7 +19,7 @@ public class Rsrujukan extends AppCompatActivity {
         setContentView(R.layout.activity_rsrujukan);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_lokasi);
-        new FirebaseDatabaseHelper().readLokasis(new FirebaseDatabaseHelper.DataStatus() {
+        new FirebaseDatabaseHelper(namadb).readLokasis(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Lokasi> books, List<String> keys) {
                 findViewById(R.id.progressBar4).setVisibility(View.GONE);

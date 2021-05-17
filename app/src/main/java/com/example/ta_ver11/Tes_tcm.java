@@ -12,10 +12,9 @@ import android.widget.ListView;
 
 import java.util.List;
 
-public class Tes extends AppCompatActivity {
-    String items[] = new String[] {"RS Cinta Kasih Tzu cHI" , "RS Ciputra Citra Garden City" , "RS Pondok Indah Puri Indah" , "RS Royal Taruma" , "Siloam Hospital Lippo Village"};
-    String items2[] = new String[] {"1km" , "11km" , "22km" , "22km" , "33km"};
-    String namadb = "PCR";
+public class Tes_tcm extends AppCompatActivity {
+
+    String namadb = "tcm";
     private RecyclerView mRecyclerView;
 
     @Override
@@ -29,7 +28,7 @@ public class Tes extends AppCompatActivity {
             @Override
             public void DataIsLoaded(List<Lokasi> books, List<String> keys) {
                 findViewById(R.id.progressBar4).setVisibility(View.GONE);
-                new RecyclerView_Config().setConfig(mRecyclerView, Tes.this, books, keys);
+                new RecyclerView_Config().setConfig(mRecyclerView, Tes_tcm.this, books, keys);
             }
 
             @Override

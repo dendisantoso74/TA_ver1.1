@@ -53,8 +53,6 @@ public class RecyclerView_Config {
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, map.class);
                     intent.putExtra("key",key);
-//                    intent.putExtra("lat",lat);
-//                    intent.putExtra("lon",lon);
                     intent.putExtra("lon",mLon.getText().toString());
                     intent.putExtra("lat",mLat.getText().toString());
                     intent.putExtra("coordinat",mCoordinat.getText().toString());
@@ -73,8 +71,7 @@ public class RecyclerView_Config {
             mJarak.setText(lokasi.getJarak());
 
             this.key = key;
-//            this.lat = lat;
-//            this.lon = lon;
+
         }
     }
     class BooksAdapter extends RecyclerView.Adapter<BookItemView>{

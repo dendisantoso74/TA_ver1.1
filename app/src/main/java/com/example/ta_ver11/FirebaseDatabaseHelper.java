@@ -22,9 +22,9 @@ public class FirebaseDatabaseHelper {
         void DataIsUpdated();
         void DataIsDeleted();
     }
-    public FirebaseDatabaseHelper() {
+    public FirebaseDatabaseHelper(String namadb) {
         mDatabase = FirebaseDatabase.getInstance();
-        mReferenceLokasi = mDatabase.getReference("rumah_sakit");
+        mReferenceLokasi = mDatabase.getReference(namadb);
     }
 
     public void readLokasis(final DataStatus dataStatus){
