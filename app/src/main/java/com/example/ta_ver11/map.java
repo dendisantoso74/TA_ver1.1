@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.geojson.CoordinateContainer;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -33,6 +35,8 @@ import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
+import com.mapbox.services.android.navigation.v5.utils.DistanceFormatter;
+import com.mapbox.turf.TurfMeasurement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +45,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
+
+import static com.mapbox.geojson.Point.fromLngLat;
 
 public class map extends AppCompatActivity implements OnMapReadyCallback, PermissionsListener {
 
@@ -64,6 +70,18 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
 //    private String lon = "empty";
     private double lat = -6.119267764452542 ;
     private double lon = 106.72941738153077;
+    private static final Point TOWER_BRIDGE = Point.fromLngLat(106.82680731347287,-6.173546319206281);
+    private static final Point LONDON_EYE = Point.fromLngLat(106.72941738153077,-6.119267764452542);
+    private double jarak;
+    private double distance;
+
+    private CoordinateContainer from;
+
+    private CoordinateContainer to;
+
+    private Point tujuan;
+    private Point awal;
+
 
 
 
@@ -75,7 +93,7 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
 
         setContentView(R.layout.activity_map);
 
-        TextView coordinattxt = findViewById(R.id.coortxt);
+//        TextView coordinattxt = findViewById(R.id.jaraktxt);
         //String coor = "-6.1217, 106.7324";
 
         Bundle extras = getIntent().getExtras();
@@ -83,9 +101,26 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
             coor = extras.getString("coordinat");
             lat = Double.parseDouble(extras.getString("lat"));
             lon = Double.parseDouble(extras.getString("lon"));
+
         }
 
-        coordinattxt.setText(coor);
+        tujuan = Point.fromLngLat(lon,lat);
+        //awal = Point.fromLngLat(origin.longitude(),origin.latitude());
+
+//        origin = fromLngLat(origin.longitude(),origin.latitude());
+        //var distance = turf.distance(to, from, options);
+        //jarak = TurfMeasurement.distance(TOWER_BRIDGE,tujuan);
+//
+//        from = turf.point([-75.343, 39.984]);
+//        to = turf.point([-75.534, 39.123]);
+//        //options = {units: 'miles'};
+//
+//        distance = turf.distance(from, to, options);
+        //distance = (Math.sqrt(((lat-origin.latitude())*(lat-origin.latitude()))+((lon-origin.longitude())*(lon-origin.longitude())))*111.319);
+
+        //coordinattxt.setText(or);
+//        coordinattxt.setText(Html.fromHtml("<font color='#6200EE'><b>Jarak :</b><br></font>" + String.format("%.2f",jarak)+ "km"));
+
 
         mapView = (MapView) findViewById(R.id.mapView);
 
@@ -105,6 +140,7 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                 }else if(status == 1){
                     status = 0;
                     getNavigation(origin,destination);
+
                 }
             }
         });
@@ -128,7 +164,7 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
             //locationComponent.setCameraMode(CameraMode.TRACKING);
 
             locationComponent.setRenderMode(RenderMode.COMPASS);
-            this.origin = Point.fromLngLat(locationComponent.getLastKnownLocation().getLongitude(),
+            this.origin = fromLngLat(locationComponent.getLastKnownLocation().getLongitude(),
                     locationComponent.getLastKnownLocation().getLatitude());
         }else {
             permissionsManager = new PermissionsManager(this);
@@ -169,13 +205,17 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
             public void onStyleLoaded(@NonNull Style style) {
                 List<Feature> symbolLayerIconFeatureList = new ArrayList<>();
                 enableLocationComponent(style);
+                TextView coordinattxt = findViewById(R.id.jaraktxt);
 
-
-                origin = Point.fromLngLat(origin.longitude(),origin.latitude());
+                origin = fromLngLat(origin.longitude(),origin.latitude());
                 destinationMarker = mapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
-                destination = Point.fromLngLat(lon, lat);
+                destination = fromLngLat(lon, lat);
                 BtnStart.setEnabled(true);
                 getRoute(origin,destination);
+
+                //awal = Point.fromLngLat(origin.longitude(),origin.latitude());
+                jarak = TurfMeasurement.distance(origin,tujuan);
+                coordinattxt.setText(Html.fromHtml("<font color='#6200EE'><b>Jarak :</b><br></font>" + String.format("%.2f",jarak)+ "km"));
                 //initLayers(style);
 
 //                mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
