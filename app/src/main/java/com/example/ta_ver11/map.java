@@ -73,6 +73,7 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
     private static final Point TOWER_BRIDGE = Point.fromLngLat(106.82680731347287,-6.173546319206281);
     private static final Point LONDON_EYE = Point.fromLngLat(106.72941738153077,-6.119267764452542);
     private double jarak;
+    private double jarak2;
     private double distance;
 
     private CoordinateContainer from;
@@ -215,7 +216,9 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
 
                 //awal = Point.fromLngLat(origin.longitude(),origin.latitude());
                 jarak = TurfMeasurement.distance(origin,tujuan);
-                coordinattxt.setText(Html.fromHtml("<font color='#6200EE'><b>Jarak :</b><br></font>" + String.format("%.2f",jarak)+ "km"));
+
+
+                coordinattxt.setText(Html.fromHtml("<font color='#6200EE'><b>straight line :</b><br></font>" + String.format("%.2f",jarak)+ "km"));
                 //initLayers(style);
 
 //                mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
@@ -286,6 +289,8 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
 
     //navigation
     private void getNavigation(Point originL, Point destination) {
+
+
         NavigationRoute.builder(getApplicationContext())
                 .accessToken(getString(R.string.mapbox_access_token))
                 .origin(originL)
@@ -294,6 +299,7 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                 .getRoute(new Callback<DirectionsResponse>() {
                     @Override
                     public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                        //TextView coordinattxt = findViewById(R.id.jaraktxt);
                         Timber.d("Response code: " + response.code());
                         if (response.body() == null) {
                             Toast.makeText(map.this, "No routes found, make sure you set the right user and access token.", Toast.LENGTH_SHORT).show();
@@ -303,6 +309,8 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                             return;
                         }
                         currentRoute = response.body().routes().get(0);
+                        //coordinattxt.setText(Html.fromHtml("<font color='#6200EE'><b>Jarak :</b><br></font>" + String.format("%.2f",jarak)+ "km"));
+                        //jarak = currentRoute.distance();
 
                         NavigationLauncherOptions options = NavigationLauncherOptions.builder()
                                 .directionsRoute(currentRoute)
@@ -329,6 +337,8 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                 .getRoute(new Callback<DirectionsResponse>() {
                     @Override
                     public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                        TextView coordinattxt = findViewById(R.id.jarakactualtxt);
+
                         // You can get the generic HTTP info about the response
                         Timber.d("Response code: " + response.code());
                         if (response.body() == null) {
@@ -347,6 +357,8 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                             navigationMapRoute = new NavigationMapRoute(null, mapView,mapboxMap );
                         }
                         navigationMapRoute.addRoute(currentRoute);
+                        jarak2 = currentRoute.distance()/1000;
+                        coordinattxt.setText(Html.fromHtml("<font color='#6200EE'><b>Jarak actual :</b><br></font>" + String.format("%.2f",jarak2)+ "km"));
                     }
 
                     @Override
