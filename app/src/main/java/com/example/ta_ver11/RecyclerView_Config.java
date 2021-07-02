@@ -48,6 +48,8 @@ public class RecyclerView_Config {
             mLat = (TextView) itemView.findViewById(R.id.lat_txtView);
             mJarak = (TextView) itemView.findViewById(R.id.isbn_txtView);
 
+
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -57,6 +59,7 @@ public class RecyclerView_Config {
                     intent.putExtra("lat",mLat.getText().toString());
                     intent.putExtra("coordinat",mCoordinat.getText().toString());
                     intent.putExtra("nama",mNama.getText().toString());
+                    intent.putExtra("jarak",mJarak.getText().toString());
                     mContext.startActivity(intent);
                     Toast.makeText(mContext,"Tujuan: " + mNama.getText(), Toast.LENGTH_SHORT).show();
                 }

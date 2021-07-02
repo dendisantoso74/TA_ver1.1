@@ -11,6 +11,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mapbox.geojson.Point.fromLngLat;
+
 public class FirebaseDatabaseHelper {
     private FirebaseDatabase mDatabase;
     private DatabaseReference mReferenceLokasi;
@@ -37,9 +39,16 @@ public class FirebaseDatabaseHelper {
                     keys.add(keyNode.getKey());
                     Lokasi lokasi = keyNode.getValue(Lokasi.class);
                     lokasis.add(lokasi);
+
                 }
                 dataStatus.DataIsLoaded(lokasis,keys);
+                //origin = fromLngLat(origin.longitude(),origin.latitude());
+                //mReferenceLokasi.child("101").child("jarak").setValue("50 km");
+
+
             }
+
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -47,4 +56,8 @@ public class FirebaseDatabaseHelper {
             }
         });
     }
+
+//    public void writejarak(final DataStatus dataStatus){
+//        mReferenceLokasi.child("1").child("jarak").setValue("50 km");
+//    }
 }

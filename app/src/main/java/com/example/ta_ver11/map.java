@@ -7,11 +7,13 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.FirebaseDatabase;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
@@ -38,8 +40,12 @@ import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.mapbox.services.android.navigation.v5.utils.DistanceFormatter;
 import com.mapbox.turf.TurfMeasurement;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.text.DateFormat;
+import java.util.Calendar;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -72,7 +78,7 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
     private double lon = 106.72941738153077;
     private static final Point TOWER_BRIDGE = Point.fromLngLat(106.82680731347287,-6.173546319206281);
     private static final Point LONDON_EYE = Point.fromLngLat(106.72941738153077,-6.119267764452542);
-    private double jarak;
+    public double jarak;
     private double jarak2;
     private double distance;
 
@@ -82,6 +88,8 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
 
     private Point tujuan;
     private Point awal;
+
+    private String namadb;
 
 
 
@@ -215,10 +223,27 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                 getRoute(origin,destination);
 
                 //awal = Point.fromLngLat(origin.longitude(),origin.latitude());
+                //menghitung jarak lurus dari lokasi pengguna ke titik lain (tujuan)
                 jarak = TurfMeasurement.distance(origin,tujuan);
+                FirebaseDatabase.getInstance().getReference("node").child("1").child("jarak").setValue(String.format("%.2f",jarak));
+                FirebaseDatabase.getInstance().getReference("isoman").child("5").child("jarak").setValue(String.format("%.2f",jarak));
+                FirebaseDatabase.getInstance().getReference("node").child("1").child("friday").child("0").setValue("10");
+
 
 
                 coordinattxt.setText(Html.fromHtml("<font color='#6200EE'><b>straight line :</b><br></font>" + String.format("%.2f",jarak)+ "km"));
+                //pengaturan hari - jam
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
+                SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("HH"); //format 24 jam
+                String jam = simpleDateFormat2.format(calendar.getTime());
+                String hari = simpleDateFormat.format(calendar.getTime());
+                TextView textViewDate = findViewById(R.id.textViewdate);
+                textViewDate.setText(hari);
+
+
+
+                //coordinattxt.setText((int) jarak);
                 //initLayers(style);
 
 //                mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {

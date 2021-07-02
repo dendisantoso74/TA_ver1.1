@@ -2,9 +2,11 @@ package com.example.ta_ver11;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -24,6 +26,12 @@ public class Rsrujukan extends AppCompatActivity {
             public void DataIsLoaded(List<Lokasi> books, List<String> keys) {
                 findViewById(R.id.progressBar4).setVisibility(View.GONE);
                 new RecyclerView_Config().setConfig(mRecyclerView, Rsrujukan.this, books, keys);
+                //FirebaseDatabase.getInstance().getReference(namadb).child("100").child("jarak").setValue("50 km");
+
+                //Intent intent = new Intent(Rsrujukan.this,map.class);
+                //intent.putExtra("namadb",namadb);
+
+
             }
 
             @Override

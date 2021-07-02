@@ -47,4 +47,7 @@ public class Lokasi {
     public String getLon() {  return lon; }
 
     public void setLon(String lon) { this.lon = lon; }
+
+
+
 }
