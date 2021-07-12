@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TA_ver11">
-        <activity android:name=".Tes_tcm"></activity>
+        <activity android:name=".CobaNode"></activity>
+        <activity android:name=".coba" />
+        <activity android:name=".Tes_tcm" />
         <activity android:name=".OpsiTes" />
         <activity android:name=".OpsiIsoman" />
         <activity android:name=".map" />

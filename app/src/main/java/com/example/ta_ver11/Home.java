@@ -39,7 +39,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener{
                 startActivity(i);
                 break;
             case R.id.button3:
-                i = new Intent(this,Rsrujukan.class);
+                i = new Intent(this,CobaNode.class);
                 startActivity(i);
                 break;
 

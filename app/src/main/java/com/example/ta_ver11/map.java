@@ -225,9 +225,9 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                 //awal = Point.fromLngLat(origin.longitude(),origin.latitude());
                 //menghitung jarak lurus dari lokasi pengguna ke titik lain (tujuan)
                 jarak = TurfMeasurement.distance(origin,tujuan);
-                FirebaseDatabase.getInstance().getReference("node").child("1").child("jarak").setValue(String.format("%.2f",jarak));
-                FirebaseDatabase.getInstance().getReference("isoman").child("5").child("jarak").setValue(String.format("%.2f",jarak));
-                FirebaseDatabase.getInstance().getReference("node").child("1").child("friday").child("0").setValue("10");
+                FirebaseDatabase.getInstance().getReference("node").child("B1").child("jarak").setValue(String.format("100"));
+                //FirebaseDatabase.getInstance().getReference("isoman").child("5").child("jarak").setValue(String.format("%.2f",jarak));
+                //FirebaseDatabase.getInstance().getReference("node").child("1").child("friday").child("0").setValue("10");
 
 
 
