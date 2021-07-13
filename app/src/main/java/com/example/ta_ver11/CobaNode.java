@@ -51,6 +51,13 @@ public class CobaNode extends AppCompatActivity {
     private Integer cekarray = 0;
     private Integer jmlstate = 0;
 
+    private Double TerbaikSAW=0.0;
+    private Double NilaiSAW=0.0;
+    private String IdSAW;
+
+    private Double jarakTerkecil = 100.0;
+    private Integer macetTerkecil = 5;
+
     String jamfirebase;
 
     //Integer i=0;
@@ -69,7 +76,7 @@ public class CobaNode extends AppCompatActivity {
         textViewNstate = findViewById(R.id.text_view_nstate);
 //        updateArray();
     }
-//    public void addNote(View v) {
+    //    public void addNote(View v) {
 //        String title = editTextTitle.getText().toString();
 //        String description = editTextDescription.getText().toString();
 //        if (editTextPriority.length() == 0) {
@@ -147,13 +154,13 @@ public class CobaNode extends AppCompatActivity {
                         //store nexstate ke array Nstate
                         for (int i = 0; i < jmlstate; i++) {
                             nestate = dataSnapshot.child(IdNode).child("state").child(String.valueOf(i)).getValue().toString();
-                              Nstate[i] = nestate;
+                            Nstate[i] = nestate;
 
                         }
 
-                        // sudah ada node awal, next state sudah masuk ke array Nstate
+                        /***sudah ada node awal, next state sudah masuk ke array Nstate***/
 
-                        //pengaturan waktu
+                        //Pengambilan waktu dari android user
                         Calendar calendar = Calendar.getInstance();
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
                         SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("HH"); //format 24 jam
@@ -193,9 +200,10 @@ public class CobaNode extends AppCompatActivity {
                             jamfirebase = "13";
                         }else if (jam.equals("20")){
                             jamfirebase = "14";
-                        }else if (jam.equals("00")){
+                        }else if (jam.equals("22")){
                             jamfirebase = "15";
                         }
+
 
                         //store lat&lon IdNode dari firebase
                         String a = dataSnapshot.child(IdNode).child("lat").getValue().toString();
@@ -227,11 +235,60 @@ public class CobaNode extends AppCompatActivity {
                             Log.d("Testing lat Nstate" + i, String.valueOf(latNstate));
                             Log.d("Testing lon Nstate" + i, String.valueOf(lonNstate));
 
-
                             //itung jarak dari IdNode ke tiap Nstate (longitude,latitude)
-                            jarakState = TurfMeasurement.distance(coorIdNode,coorNstate);
-                            Log.d("Testing lat jarak" + i, String.valueOf(jarakState));
+                            jarakState = TurfMeasurement.distance(coorIdNode,coorNstate); //jarak state
+                            Log.d("Tesjarak" + i, String.valueOf(jarakState));
                             //reff.child(Nstate[i]).child("jarak").setValue(jarak);//store jarak ke firebase
+
+                            //Batas Terakhir ujicoba + berhasil
+
+                            /********PERHITUNGAN SAW (jarak 70% + kemacetan 30%)********/
+
+
+                            //cari nilai terkecil dari jarak dan kemacetan
+                            if (Double.compare(jarakState, jarakTerkecil) < 0){
+                                jarakTerkecil = jarakState;
+                                //Log.d("testIF" + i, "terpenuhi");
+                            } else {
+                                Log.d("testIF" + i, "tidak terpenuhi");
+
+                            }
+                            if (Double.compare(kemacetan, macetTerkecil) < 0){
+                                macetTerkecil = kemacetan;
+                                //Log.d("testIF" + i, "terpenuhi");
+                            } else {
+                                Log.d("testIF" + i, "tidak terpenuhi");
+
+                            }
+                            Log.d("jarak terkecil", String.valueOf(jarakTerkecil));
+                            Log.d("kemacetan terkecil", String.valueOf(macetTerkecil));
+                            //end cari nilai terkecil dari jarak dan kemacetan
+
+                            //Normalisasi
+                            Double NormJarak = 0.409457764496959/jarakState;
+                            Double NormMacet = Double.valueOf(1.0/kemacetan);
+                            Log.d("normalisasi jarak"+i, String.valueOf(NormJarak));
+                            //Log.d("nilai terbaik jarak"+i, String.valueOf(terbaikjarak));
+                            //Log.d("nilai jarakstate"+i, String.valueOf(terbaikjarak));
+                            Log.d("normalisasi kemacetan"+i, String.valueOf(NormMacet));
+
+                            //Nilai SAW
+                            NilaiSAW = ((0.7*NormJarak) + (0.3*NormMacet)); //bisa array atau perulangan?
+                            Log.d("testingsaw", String.valueOf(NilaiSAW));
+                            TerbaikSAW = 10.0; //deklarasi var terbaik awal
+
+                            //perbandingan Nilai SAW, Cari yg terbaik(terkecil)/cost
+                            if (Double.compare(TerbaikSAW, NilaiSAW) < 0){ // var terbaik SAW akan diisi oleh Nilai SAW terbaik Dari Node Sebelumnya
+                                Log.d("tesif", "kondisi if terpenuhi");
+                            } else {
+                                TerbaikSAW = NilaiSAW;
+                                IdSAW = Nstate[i];
+                                Log.d("tesif terbaiksaw" + i, String.valueOf(TerbaikSAW));
+                                Log.d("tesif id" + i, String.valueOf(IdSAW));
+                            }
+
+                            //next State terpilih adalah IdSAW dengan Nilai SAW di var TerbaikSAW
+
 
                         }
 
@@ -246,14 +303,13 @@ public class CobaNode extends AppCompatActivity {
 //                        Log.d("testing",Nstate[1]);
 //                        Log.d("testing",Nstate[2]);
 //                        Log.d("testing jml perulangan",Integer.toString(cekarray));
+                        //Log.d("testingsaw Nilia", String.valueOf(TerbaikSAW));
+                        //Log.d("testingsaw ID", String.valueOf(IdSAW));
 
                     }
                 });
 
     }
-
-
-
 
 //    private void updateArray() {
 //        reff.document("M0lZ7h4X6zlEPldSGXXR")
