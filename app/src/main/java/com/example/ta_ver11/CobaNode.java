@@ -38,6 +38,7 @@ public class CobaNode extends AppCompatActivity {
     private Point origin;
     private Point coorIdNode;
     private Point coorNstate;
+    private Point Goal;
     private Double lat;
     private Double lon;
     private Double jarak;
@@ -59,8 +60,11 @@ public class CobaNode extends AppCompatActivity {
     private Double jarakTerkecil = 100.0;
     private Integer macetTerkecil = 5;
 
-
     private Double macetterkecil;
+
+    int statusGoal;
+    String goalID;
+    Point goalCoor;
 
     String TerbaikSAWID;
     Point TerbaikSAWCoor;
@@ -81,6 +85,8 @@ public class CobaNode extends AppCompatActivity {
         textViewNodeTerbaik = findViewById(R.id.text_view_nodeterbaik);
         textViewIdNodeTerbaik = findViewById(R.id.text_view_idnodeternaik);
         textViewNstate = findViewById(R.id.text_view_nstate);
+        //Latitude longitude goal
+        Goal = Point.fromLngLat(106.7849847,-6.166142055);
 //        updateArray();
     }
     //    public void addNote(View v) {
@@ -136,7 +142,7 @@ public class CobaNode extends AppCompatActivity {
                             origin = Point.fromLngLat(106.82714206866876,-6.1753870622395635);
                             tujuan = Point.fromLngLat(lon, lat); //-6.128317253066011, 106.83302015898145
 
-                            //menghitung jarak antar node
+                            //menghitung jarak dari gps user ke semua node
                             jarak = TurfMeasurement.distance(origin,tujuan);
                             reff.child(documentId).child("jarak").setValue(jarak); //store jarak ke firebase
 
@@ -162,7 +168,6 @@ public class CobaNode extends AppCompatActivity {
                         for (int i = 0; i < jmlstate; i++) {
                             nestate = dataSnapshot.child(IdNode).child("state").child(String.valueOf(i)).getValue().toString();
                             Nstate[i] = nestate;
-
                         }
 
                         /***sudah ada node awal, next state sudah masuk ke array Nstate***/
@@ -207,7 +212,7 @@ public class CobaNode extends AppCompatActivity {
                             jamfirebase = "13";
                         }else if (jam.equals("20")){
                             jamfirebase = "14";
-                        }else if (jam.equals("23")){
+                        }else if (jam.equals("22")){
                             jamfirebase = "15";
                         }
 
@@ -237,77 +242,120 @@ public class CobaNode extends AppCompatActivity {
                             //Log.d("Testing lon Nstate" + i, String.valueOf(lonNstate));
 
                             //itung jarak dari IdNode ke tiap Nstate (longitude,latitude)
-                            jarakState = TurfMeasurement.distance(coorIdNode,coorNstate); //jarak state
+                            //jarakState = TurfMeasurement.distance(coorIdNode,coorNstate); //jarak state
+                            jarakState = TurfMeasurement.distance(Goal,coorNstate);  // jarak Goal ke node(Nstate)
                             Log.d("Tesjarak" + i, String.valueOf(jarakState));
-                            //reff.child(Nstate[i]).child("jarak").setValue(jarak);//store jarak ke firebase
+                            //reff.child(Nstate[i]).child("jarakDariGoal").setValue(jarakState);//store jarak ke firebase
 
+//                            if (jarakState==0.0){
+//                                Log.d("Tujuan", "sampai");
+//                            }
 
                             /********PERHITUNGAN SAW (jarak 70% + kemacetan 30%)********/
 
                             //cari nilai terkecil dari jarak dan kemacetan
                             if (Double.compare(jarakState, jarakTerkecil) < 0){
                                 jarakTerkecil = jarakState;
+
                                 //Log.d("testIF" + i, "terpenuhi");
                             } else {
                                 //Log.d("testIF" + i, "tidak terpenuhi");
-
                             }
+
+                            if (jarakTerkecil==0.0){
+                                statusGoal=1;
+                                goalID=Nstate[i];
+                                goalCoor=coorNstate;
+//                                Log.d("tesIDgoal status", String.valueOf(statusGoal));
+//                                Log.d("tesIDgoal ",goalID);
+//                                Log.d("tesIDgoal coor", String.valueOf(goalCoor));
+
+                            }else {
+                                statusGoal=0;
+                                Log.d("tesIDgoal", String.valueOf(statusGoal));
+                            }
+
+
                             if (Double.compare(kemacetan, macetTerkecil) < 0){
                                 macetTerkecil = kemacetan;
                                 macetterkecil = new Double(kemacetan);
                                 //Log.d("testIF" + i, String.valueOf(kemacetan));
                                 //Log.d("testIF Double" + i, String.valueOf(macetterkecil));
                             } else {
-                                Log.d("testIF" + i, "tidak terpenuhi");
+                                //Log.d("testIF" + i, "tidak terpenuhi");
+
                             }
+                        } //end for jmlstate
+
+                        /** if else apabila jarak 0**/
+                        //perbandingan apabila jarak == 0.0 , maka tujuan sampai
+                        if (statusGoal==1){ // if status goal 1 ambil goalID,goalCoor
+                            Log.d("tesBAgi0", "Terpenuhi");
+                            //jika jarak == 0 maka perhitungan saw berhenti dan id - coor masuk ke rute -> tampil rute
+                            //ambil id
+                            //ambil coor
+
+                            TerbaikSAWID = goalID;
+                            TerbaikSAWCoor =goalCoor;
+
+                            Log.d("tesIDgoal status", String.valueOf(statusGoal));
+                            Log.d("tesIDgoal ",TerbaikSAWID);
+                            Log.d("tesIDgoal coor", String.valueOf(TerbaikSAWCoor));
+
                         }
+                        else {
+                            Log.d("tesBAgi0", "tidak Terpenuhi");
+                            //jika jarak tidak sama dengan 0 maka perhitungan saw lanjut ke normalisasi
+                            /**Lanjutan SAW Setelah menetukan nilai minimal tiap kriteria**/
+                            for (int j = 0; j < jmlstate; j++) {
+                                kemacetan = Integer.valueOf(dataSnapshot.child(Nstate[j]).child(hari).child(jamfirebase).getValue().toString());
 
-                        /**normalisasi**/
-                        for (int i = 0; i < jmlstate; i++) {
-                            kemacetan = Integer.valueOf(dataSnapshot.child(Nstate[i]).child(hari).child(jamfirebase).getValue().toString());
+                                String c = dataSnapshot.child(Nstate[j]).child("lat").getValue().toString();
+                                String d = dataSnapshot.child(Nstate[j]).child("lon").getValue().toString();
+                                //convert lat&lon Nsate string to Double
+                                Double latNstate = Double.valueOf(c);
+                                Double lonNstate = Double.valueOf(d);
+                                coorNstate = Point.fromLngLat(lonNstate,latNstate);
 
-                            String c = dataSnapshot.child(Nstate[i]).child("lat").getValue().toString();
-                            String d = dataSnapshot.child(Nstate[i]).child("lon").getValue().toString();
-                            //convert lat&lon Nsate string to Double
-                            Double latNstate = Double.valueOf(c);
-                            Double lonNstate = Double.valueOf(d);
-                            coorNstate = Point.fromLngLat(lonNstate,latNstate);
+                                //itung jarak dari IdNode ke tiap Nstate (longitude,latitude)
+                                jarakState = TurfMeasurement.distance(Goal,coorNstate); //jarak state
+                                //Log.d("Tesjarak" + i, String.valueOf(jarakState));
 
-                            //itung jarak dari IdNode ke tiap Nstate (longitude,latitude)
-                            jarakState = TurfMeasurement.distance(coorIdNode,coorNstate); //jarak state
-                            //Log.d("Tesjarak" + i, String.valueOf(jarakState));
+                                Double NormJarak = jarakTerkecil / jarakState;
+                                Double NormMacet = macetterkecil / kemacetan;
+                                Log.d("normalisasi kemacetan"+j, String.valueOf(NormMacet));
+                                Log.d("normalisasi jarak"+j, String.valueOf(NormJarak));
 
-                            Double NormJarak = jarakTerkecil / jarakState;
-                            Double NormMacet = macetterkecil / kemacetan;
-                            Log.d("normalisasi kemacetan"+i, String.valueOf(NormMacet));
-                            Log.d("normalisasi jarak"+i, String.valueOf(NormJarak));
+                                /**Nilai SAW**/
+                                NilaiSAW = ((0.7 * NormJarak) + (0.3 * NormMacet)); //bisa array atau perulangan?
+                                Log.d("testingsaw", String.valueOf(NilaiSAW));
 
-                            /**Nilai SAW**/
-                            NilaiSAW = ((0.7 * NormJarak) + (0.3 * NormMacet)); //bisa array atau perulangan?
-                            Log.d("testingsaw", String.valueOf(NilaiSAW));
+                                /**perbandingan SAW**/
+                                if (Double.compare(TerbaikSAW, NilaiSAW) == 0) {
 
-                            /**perbandingan SAW**/
-                            if (Double.compare(TerbaikSAW, NilaiSAW) == 0) {
+                                    System.out.println("d1=d2");
+                                }
+                                else if (Double.compare(TerbaikSAW, NilaiSAW) < 0) {
 
-                                System.out.println("d1=d2");
-                            }
-                            else if (Double.compare(TerbaikSAW, NilaiSAW) < 0) {
+                                    System.out.println("d1<d2");
+                                    TerbaikSAW = NilaiSAW;
+                                    TerbaikSAWID = Nstate[j];
+                                    TerbaikSAWCoor =coorNstate;
+                                }
+                                else {
 
-                                System.out.println("d1<d2");
-                                TerbaikSAW = NilaiSAW;
-                                TerbaikSAWID = Nstate[i];
-                                TerbaikSAWCoor =coorNstate;
+                                    System.out.println("d1>d2");
 
-                            }
-                            else {
+                                }
+                                //Log.d("terbaikSAW", String.valueOf(TerbaikSAW));
 
-                                System.out.println("d1>d2");
+                            } //Tutup for (END SAW)
 
-                            }
-                            //Log.d("terbaikSAW", String.valueOf(TerbaikSAW));
+                        } //tutup else
+                        /** end if else apabila jarak 0**/
 
-                            //end normalisasi
-                        }
+                        //array rute
+
                         Log.d("terbaikSAW", String.valueOf(TerbaikSAW));
                         Log.d("terbaikSAW ID", String.valueOf(TerbaikSAWID));
                         Log.d("terbaikSAW COOR", String.valueOf(TerbaikSAWCoor));
@@ -317,15 +365,15 @@ public class CobaNode extends AppCompatActivity {
                         textViewIdNodeTerbaik.setText(IdNode);
                         textViewNstate.setText(Integer.toString(jmlstate));
 
+
                     }
                 });
 
     }
 
-//    private void updateArray() {
-//        reff.document("M0lZ7h4X6zlEPldSGXXR")
-//                //.update("tags", FieldValue.arrayUnion("new tag"));
-//                .update("tags", FieldValue.arrayRemove("new tag"));
-//    }
+    private void classbaru() {
+        Log.d("tesclass","berhasil");
+
+    }
 
 }
