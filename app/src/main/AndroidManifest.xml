@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TA_ver11">
-        <activity android:name=".CobaNode"></activity>
+        <activity android:name=".UjicobaRute"></activity>
+        <activity android:name=".CobaNode" />
         <activity android:name=".coba" />
         <activity android:name=".Tes_tcm" />
         <activity android:name=".OpsiTes" />
