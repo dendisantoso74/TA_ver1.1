@@ -1,7 +1,15 @@
 package com.example.ta_ver11;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +26,7 @@ import com.mapbox.turf.TurfMeasurement;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class UjicobaRute extends AppCompatActivity {
+public class UjicobaRute extends AppCompatActivity implements LocationListener {
     private EditText editTextTitle;
     private EditText editTextDescription;
     private EditText editTextPriority;
@@ -31,10 +39,10 @@ public class UjicobaRute extends AppCompatActivity {
     //private CollectionReference notebookRef = db.collection("Notebook");
     private DatabaseReference reff = FirebaseDatabase.getInstance().getReference("node");
 
-    private Point Goal = Point.fromLngLat(106.767897,-6.158282); // B40 106.73563,-6.137062 Rs 106.7849847,-6.166142055 B168 106.767897,-6.158282
+    private Point Goal = Point.fromLngLat(106.767897, -6.158282); // B40 106.73563,-6.137062 Rs 106.7849847,-6.166142055 B168 106.767897,-6.158282
     private Point coorNstate;
     private Point tujuan;
-    private Point origin = Point.fromLngLat(106.74460242519883,-6.1387230632241065);
+    private Point origin = Point.fromLngLat(106.74460242519883, -6.1387230632241065);
 
 
     private Double lat;
@@ -42,7 +50,7 @@ public class UjicobaRute extends AppCompatActivity {
     private Double jarak; //jarak dari gps ke semua node
     private Double[] jarakState; //jarak daro goal ke next state
     private Double jarakgoal;
-    private Double terbaikjarak=100.0;
+    private Double terbaikjarak = 100.0;
     private Double jarakTerkecil = 100.0;
     private Double[] NormJarak;
     private Double[] NormMacet;
@@ -50,24 +58,27 @@ public class UjicobaRute extends AppCompatActivity {
     private Double NJarak;
     private Double[] NilaiSAW;
     private Double Nsaw;
-    private Double sawTerpilih=0.0;
+    private Double sawTerpilih = 0.0;
 
     private String InitialstateID;
     private String[] Nextstate;
-    private String jamfirebase="";
+    private String jamfirebase = "";
     private String hari;
     private String sawTerpilihID;
     private String[] ruteID;
 
     private Integer[] kemacetan;
     private Integer macet;
-    private Integer indexDO=0;
+    private Integer indexDO = 0;
     private Double macetTerkecil = 5.0;
 
     private String testing;
 
     private boolean status = false;
 
+    private LocationManager locationManager;
+    double lonGPS;
+    double latGPS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +89,31 @@ public class UjicobaRute extends AppCompatActivity {
         textViewNodeTerbaik = findViewById(R.id.text_view_nodeterbaik);
         textViewIdNodeTerbaik = findViewById(R.id.text_view_idnodeternaik);
         textViewNstate = findViewById(R.id.text_view_nstate);
+
+        //ambil gps
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+
+        onLocationChanged(location);
+
+        Log.d("lokasiUser", String.valueOf(lonGPS) +", "+ String.valueOf(latGPS));
+
+        origin = Point.fromLngLat(lonGPS, latGPS);
+
+        //Log.d("lokasiUser", origin +" origin ");
 
         //Pengambilan waktu dari android user
         Calendar calendar = Calendar.getInstance();
@@ -116,8 +152,8 @@ public class UjicobaRute extends AppCompatActivity {
         }else if (jam.equals("19")){
             jamfirebase = "13";
         }else if (jam.equals("20")){
-            jamfirebase = "15";
-        }else if (jam.equals("21")){
+            jamfirebase = "14";
+        }else if (jam.equals("22")){
             jamfirebase = "15";
         }
 
@@ -354,5 +390,9 @@ public class UjicobaRute extends AppCompatActivity {
     }
 
 
-
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        lonGPS=location.getLongitude();
+        latGPS=location.getLatitude();
+    }
 }
