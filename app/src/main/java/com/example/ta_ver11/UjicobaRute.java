@@ -31,7 +31,7 @@ public class UjicobaRute extends AppCompatActivity {
     //private CollectionReference notebookRef = db.collection("Notebook");
     private DatabaseReference reff = FirebaseDatabase.getInstance().getReference("node");
 
-    private Point Goal = Point.fromLngLat(106.7849847,-6.166142055);
+    private Point Goal = Point.fromLngLat(106.767897,-6.158282); // B40 106.73563,-6.137062 Rs 106.7849847,-6.166142055 B168 106.767897,-6.158282
     private Point coorNstate;
     private Point tujuan;
     private Point origin = Point.fromLngLat(106.74460242519883,-6.1387230632241065);
@@ -65,6 +65,8 @@ public class UjicobaRute extends AppCompatActivity {
     private Double macetTerkecil = 5.0;
 
     private String testing;
+
+    private boolean status = false;
 
 
     @Override
@@ -114,8 +116,8 @@ public class UjicobaRute extends AppCompatActivity {
         }else if (jam.equals("19")){
             jamfirebase = "13";
         }else if (jam.equals("20")){
-            jamfirebase = "14";
-        }else if (jam.equals("23")){
+            jamfirebase = "15";
+        }else if (jam.equals("21")){
             jamfirebase = "15";
         }
 
@@ -181,6 +183,7 @@ public class UjicobaRute extends AppCompatActivity {
                 ruteID = new  String[10];
                 ruteID[0] =InitialstateID;
                 db.getReference("rute").child(String.valueOf(0)).setValue(ruteID[0]); //store firebase index 0
+
                 do{
                     Log.d("cek indeks sblm rute", String.valueOf(indexDO));
                     if (indexDO>0){
@@ -228,7 +231,13 @@ public class UjicobaRute extends AppCompatActivity {
                     //hitung jarak
                     jarakgoal = TurfMeasurement.distance(Goal, coorNstate);  // jarak Goal ke node(Nstate)
                     jarakState[k]=jarakgoal;
-                    Log.d("jarak ke goal",Nextstate[k]+" jarak : "+jarakState[k]);
+                    Log.d("jarakkegoal",Nextstate[k]+" jarak : "+jarakState[k]);
+                    if (jarakState[k]==0.0){
+
+                        status = true;
+                        Log.d("tesif",Nextstate[k]+" jarak : "+jarakState[k]);
+                        Log.d("tesif", String.valueOf(status));
+                    }
                 }//end for jarak
 
                     // mengubah nilai dari rute sebelumnya agar tidak mengulang
@@ -331,12 +340,13 @@ public class UjicobaRute extends AppCompatActivity {
                     ruteID[indexDO+1] =sawTerpilihID;
                     Log.d("cek ruteID"+indexDO, ruteID[indexDO]);
                     db.getReference("rute").child(String.valueOf(indexDO+1)).setValue(ruteID[indexDO+1]); //store rute ke firebase
-
                     indexDO++;
-
+                    Log.d("StatusTRUE", String.valueOf(status));
                 }
 
-                while (indexDO < 5);
+
+                //while (indexDO < 9);
+                while (status==false);
 
                 textViewData.setText(data3);
             }

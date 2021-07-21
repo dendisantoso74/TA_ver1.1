@@ -27,10 +27,8 @@ public class Rsrujukan extends AppCompatActivity {
                 findViewById(R.id.progressBar4).setVisibility(View.GONE);
                 new RecyclerView_Config().setConfig(mRecyclerView, Rsrujukan.this, books, keys);
                 //FirebaseDatabase.getInstance().getReference(namadb).child("100").child("jarak").setValue("50 km");
-
                 //Intent intent = new Intent(Rsrujukan.this,map.class);
                 //intent.putExtra("namadb",namadb);
-
 
             }
 
