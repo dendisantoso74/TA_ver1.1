@@ -153,7 +153,7 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
             jamfirebase = "13";
         }else if (jam.equals("20")){
             jamfirebase = "14";
-        }else if (jam.equals("21")){
+        }else if (jam.equals("00")){
             jamfirebase = "15";
         }
 

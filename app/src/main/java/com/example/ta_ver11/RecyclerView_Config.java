@@ -2,6 +2,7 @@ package com.example.ta_ver11;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,18 +56,18 @@ public class RecyclerView_Config {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, map.class);
+                    Intent intent = new Intent(mContext, LihatRute.class);
+                    //Intent intent = new Intent(mContext, map.class);
                     intent.putExtra("key",key);
                     intent.putExtra("lon",mLon.getText().toString());
                     intent.putExtra("lat",mLat.getText().toString());
                     intent.putExtra("terdekat",mCoordinat.getText().toString());
                     intent.putExtra("nama",mNama.getText().toString());
 
-
-
-
                     mContext.startActivity(intent);
-                    Toast.makeText(mContext,"Tujuan: " + mNama.getText(), Toast.LENGTH_SHORT).show();
+
+                    //Toast.makeText(mContext,"Tujuan: " + mNama.getText(), Toast.LENGTH_SHORT).show();
+
                 }
             });
 

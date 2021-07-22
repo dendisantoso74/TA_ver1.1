@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.mapbox.turf.TurfMeasurement;
+
 import java.util.List;
 
 public class Isoman extends AppCompatActivity {
@@ -27,8 +29,10 @@ public class Isoman extends AppCompatActivity {
         new FirebaseDatabaseHelper(namadb).readLokasis(new FirebaseDatabaseHelper.DataStatus() {
             @Override
             public void DataIsLoaded(List<Lokasi> books, List<String> keys) {
+
                 findViewById(R.id.progressBar4).setVisibility(View.GONE);
                 new RecyclerView_Config().setConfig(mRecyclerView, Isoman.this, books, keys);
+
             }
 
             @Override

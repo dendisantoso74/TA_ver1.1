@@ -72,8 +72,6 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
     private static final String TAG = "opsiIsoman";
     private int status = 0;
     private String coor = "-6.1217, 106.7324";
-//    private String lat = "empty";
-//    private String lon = "empty";
     private double lat = -6.119267764452542 ;
     private double lon = 106.72941738153077;
     private static final Point TOWER_BRIDGE = Point.fromLngLat(106.82680731347287,-6.173546319206281);
@@ -109,7 +107,7 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
 
         Bundle extras = getIntent().getExtras();
         if(extras != null){
-            coor = extras.getString("coordinat");
+            //coor = extras.getString("coordinat");
             lat = Double.parseDouble(extras.getString("lat"));
             lon = Double.parseDouble(extras.getString("lon"));
             terdekat = extras.getString("terdekat");
