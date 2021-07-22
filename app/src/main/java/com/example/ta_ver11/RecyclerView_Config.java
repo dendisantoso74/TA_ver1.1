@@ -34,9 +34,11 @@ public class RecyclerView_Config {
         private TextView mLon;
         private TextView mLat;
 
+        private String terdekat; //tambahan
         private String key;
         private String lat;
         private String lon;
+
 
         public BookItemView(ViewGroup parent){
             super (LayoutInflater.from(mContext).
@@ -57,9 +59,12 @@ public class RecyclerView_Config {
                     intent.putExtra("key",key);
                     intent.putExtra("lon",mLon.getText().toString());
                     intent.putExtra("lat",mLat.getText().toString());
-                    intent.putExtra("coordinat",mCoordinat.getText().toString());
+                    intent.putExtra("terdekat",mCoordinat.getText().toString());
                     intent.putExtra("nama",mNama.getText().toString());
-                    intent.putExtra("jarak",mJarak.getText().toString());
+
+
+
+
                     mContext.startActivity(intent);
                     Toast.makeText(mContext,"Tujuan: " + mNama.getText(), Toast.LENGTH_SHORT).show();
                 }
@@ -67,7 +72,7 @@ public class RecyclerView_Config {
 
         }
         public void bind(Lokasi lokasi, String key){
-            mCoordinat.setText(lokasi.getCoordinat());
+            mCoordinat.setText(lokasi.getTerdekat());
             mNama.setText(lokasi.getNama());
             mLon.setText(lokasi.getLon());
             mLat.setText(lokasi.getLat());

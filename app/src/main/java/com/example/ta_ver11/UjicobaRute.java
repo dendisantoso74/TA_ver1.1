@@ -42,7 +42,7 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
     private Point Goal = Point.fromLngLat(106.767897, -6.158282); // B40 106.73563,-6.137062 Rs 106.7849847,-6.166142055 B168 106.767897,-6.158282
     private Point coorNstate;
     private Point tujuan;
-    private Point origin = Point.fromLngLat(106.74460242519883, -6.1387230632241065);
+    private Point origin; //Point.fromLngLat(106.74460242519883, -6.1387230632241065);
 
 
     private Double lat;
@@ -105,15 +105,15 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        Location location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+        Location location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
 
         onLocationChanged(location);
 
-        Log.d("lokasiUser", String.valueOf(lonGPS) +", "+ String.valueOf(latGPS));
+        Log.d("lokasiUsergps", String.valueOf(lonGPS) +", "+ String.valueOf(latGPS));
 
         origin = Point.fromLngLat(lonGPS, latGPS);
 
-        //Log.d("lokasiUser", origin +" origin ");
+        Log.d("lokasiUser", origin +" origin ");
 
         //Pengambilan waktu dari android user
         Calendar calendar = Calendar.getInstance();
@@ -153,7 +153,7 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
             jamfirebase = "13";
         }else if (jam.equals("20")){
             jamfirebase = "14";
-        }else if (jam.equals("22")){
+        }else if (jam.equals("01")){
             jamfirebase = "15";
         }
 
@@ -197,6 +197,7 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
                     jarak = TurfMeasurement.distance(origin,tujuan);
                     reff.child(documentId).child("jarak").setValue(jarak); //store jarak ke firebase
 
+                    Log.d("logJarak", String.valueOf(jarak)+ " ID " +documentId);
                     //mennetukan jarak terbaik untuk titik awal
                     if (Double.compare(terbaikjarak, node.getJarak()) == 0){
                         //System.out.println("d1=d2"+ " iterasike-" );
@@ -216,7 +217,7 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
                 Log.d("Keluaran initial state",InitialstateID);
                 //InitialstateID = "B170";
 
-                ruteID = new  String[10];
+                ruteID = new  String[200];
                 ruteID[0] =InitialstateID;
                 db.getReference("rute").child(String.valueOf(0)).setValue(ruteID[0]); //store firebase index 0
 
@@ -277,17 +278,33 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
                 }//end for jarak
 
                     // mengubah nilai dari rute sebelumnya agar tidak mengulang
+//                    if (indexDO>0){
+//
+//                        for (int z = 0; z < jmlstate; z++) {
+//                            if (Nextstate[z].equals(ruteID[indexDO - 1])) {
+//
+//                                jarakState[z] += 100.0;
+//
+//                            }
+//                            else {
+//                                //jarakState[z]+= 0.0;
+//
+//                            }
+//                        }
+//                    }//end if
+                    //edit
                     if (indexDO>0){
 
                         for (int z = 0; z < jmlstate; z++) {
-                            if (Nextstate[z].equals(ruteID[indexDO - 1])) {
+                            for (int y =0;y<indexDO;y++) {
+                                if (Nextstate[z].equals(ruteID[y])) {
 
-                                jarakState[z] += 100.0;
+                                    jarakState[z] += 100.0;
 
-                            }
-                            else {
-                                //jarakState[z]+= 0.0;
+                                } else {
+                                    //jarakState[z]+= 0.0;
 
+                                }
                             }
                         }
                     }//end if
@@ -355,7 +372,6 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
 
                 for (int o = 0; o < jmlstate; o++){
 
-
                     if (Double.compare(sawTerpilih, NilaiSAW[o]) == 0) {
 
                         //System.out.println("d1=d2" + " iterasike-"+o+": " + sawTerpilih);
@@ -388,7 +404,6 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
             }
         });
     }
-
 
     @Override
     public void onLocationChanged(@NonNull Location location) {

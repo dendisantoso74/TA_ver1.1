@@ -4,7 +4,7 @@ import android.content.Intent;
 
 public class Lokasi {
     private String nama;
-    private String coordinat;
+    private String terdekat;
     private String jarak;
     private String lat;
     private String lon;
@@ -12,9 +12,9 @@ public class Lokasi {
     public Lokasi() {
     }
 
-    public Lokasi(String nama, String coordinat, String jarak, String lat, String lon) {
+    public Lokasi(String nama, String terdekat, String jarak, String lat, String lon) {
         this.nama = nama;
-        this.coordinat = coordinat;
+        this.terdekat = terdekat;
         this.jarak = jarak;
         this.lat = lat;
         this.lon = lon;
@@ -28,12 +28,12 @@ public class Lokasi {
         this.nama = nama;
     }
 
-    public String getCoordinat() {
-        return coordinat;
+    public String getTerdekat() {
+        return terdekat;
     }
 
-    public void setCoordinat(String coordinat) {
-        this.coordinat = coordinat;
+    public void setTerdekat(String terdekat) {
+        this.terdekat = terdekat;
     }
 
     public String getJarak() {  return jarak; }

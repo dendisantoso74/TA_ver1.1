@@ -91,6 +91,8 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
 
     private String namadb;
 
+    private String terdekat;
+
 
 
 
@@ -110,6 +112,8 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
             coor = extras.getString("coordinat");
             lat = Double.parseDouble(extras.getString("lat"));
             lon = Double.parseDouble(extras.getString("lon"));
+            terdekat = extras.getString("terdekat");
+            Log.d("tesTerdekat", String.valueOf(terdekat));
 
         }
 

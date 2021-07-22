@@ -13,7 +13,7 @@ import android.widget.ListView;
 import java.util.List;
 
 public class Isoman extends AppCompatActivity {
-    String items[] = new String[] {"RS Jantung Harapan Kita", "RS Kanker Dharmais, RS Pelni", "Lab FK Universitas Tarumanegara", "Genelab,IntiBios Lab", "Klinik Rosella", "RS Graha Kedoya" , "RS Cinta Kasih Tzu cHI" , "RS Ciputra Citra Garden City" , "RS Pondok Indah Puri Indah" , "RS Royal Taruma" , "Siloam Hospital Lippo Village"};
+
     String namadb = "isoman";
     private RecyclerView mRecyclerView;
 

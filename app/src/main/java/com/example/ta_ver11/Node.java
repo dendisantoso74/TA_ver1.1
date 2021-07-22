@@ -11,6 +11,7 @@ public class Node {
     private String lon;
     private int bobot;
     private Double jarak;
+
     List<String> tags; //id node
     List<String> state;
     public Node() {
@@ -23,6 +24,8 @@ public class Node {
         this.lon = lon;
         this.tags = tags; //id node
         this.state = state;
+
+
     }
     @Exclude
     public String getDocumentId() {
@@ -49,4 +52,6 @@ public class Node {
     public List<String> getState() {
         return state;
     }
+
+
 }
