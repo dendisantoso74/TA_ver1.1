@@ -153,7 +153,7 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
             jamfirebase = "13";
         }else if (jam.equals("20")){
             jamfirebase = "14";
-        }else if (jam.equals("01")){
+        }else if (jam.equals("21")){
             jamfirebase = "15";
         }
 
@@ -226,7 +226,7 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
                     if (indexDO>0){
                         InitialstateID = sawTerpilihID;
                         macetTerkecil = 5.0;
-                        jarakTerkecil = 100.0;
+                        jarakTerkecil = 500.0;
                         sawTerpilih = 0.0;
                     }
 
@@ -299,7 +299,7 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
                             for (int y =0;y<indexDO;y++) {
                                 if (Nextstate[z].equals(ruteID[y])) {
 
-                                    jarakState[z] += 100.0;
+                                    jarakState[z] += 1000.0;
 
                                 } else {
                                     //jarakState[z]+= 0.0;
