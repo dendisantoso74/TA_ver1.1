@@ -55,6 +55,7 @@
         android:layout_marginTop="32dp"
         android:fadingEdge="horizontal"
         android:text="Tempat Isolasi Mandiri"
+        android:onClick="loadNotes"
         android:textColor="#155263"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

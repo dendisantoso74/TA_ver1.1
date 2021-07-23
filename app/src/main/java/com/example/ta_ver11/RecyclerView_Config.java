@@ -2,6 +2,7 @@ package com.example.ta_ver11;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,7 +78,8 @@ public class RecyclerView_Config {
             mNama.setText(lokasi.getNama());
             mLon.setText(lokasi.getLon());
             mLat.setText(lokasi.getLat());
-            mJarak.setText(lokasi.getJarak());
+            //mJarak.setText(String.valueOf(lokasi.getJarak()));
+            mJarak.setText(Html.fromHtml(String.format("%.2f",lokasi.getJarak())+ "km"));
 
             this.key = key;
 

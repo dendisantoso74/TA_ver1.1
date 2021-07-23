@@ -45,7 +45,6 @@ public class FirebaseDatabaseHelper {
                 //origin = fromLngLat(origin.longitude(),origin.latitude());
                 //mReferenceLokasi.child("101").child("jarak").setValue("50 km");
 
-
             }
 
 

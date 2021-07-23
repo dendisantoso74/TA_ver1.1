@@ -77,8 +77,8 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
     private boolean status = false;
 
     private LocationManager locationManager;
-    double lonGPS;
-    double latGPS;
+    private double lonGPS;
+    private double latGPS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +153,7 @@ public class UjicobaRute extends AppCompatActivity implements LocationListener {
             jamfirebase = "13";
         }else if (jam.equals("20")){
             jamfirebase = "14";
-        }else if (jam.equals("00")){
+        }else if (jam.equals("22")){
             jamfirebase = "15";
         }
 

@@ -1,18 +1,16 @@
 package com.example.ta_ver11;
 
-import android.content.Intent;
-
 public class Lokasi {
     private String nama;
     private String terdekat;
-    private String jarak;
+    private Double jarak;
     private String lat;
     private String lon;
 
     public Lokasi() {
     }
 
-    public Lokasi(String nama, String terdekat, String jarak, String lat, String lon) {
+    public Lokasi(String nama, String terdekat, Double jarak, String lat, String lon) {
         this.nama = nama;
         this.terdekat = terdekat;
         this.jarak = jarak;
@@ -36,9 +34,9 @@ public class Lokasi {
         this.terdekat = terdekat;
     }
 
-    public String getJarak() {  return jarak; }
+    public Double getJarak() {  return jarak; }
 
-    public void setJarak(String jarak) { this.jarak = jarak; }
+    public void setJarak(Double jarak) { this.jarak = jarak; }
 
     public String getLat() {  return lat; }
 

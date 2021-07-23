@@ -216,7 +216,7 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
             public void onStyleLoaded(@NonNull Style style) {
                 List<Feature> symbolLayerIconFeatureList = new ArrayList<>();
                 enableLocationComponent(style);
-                TextView coordinattxt = findViewById(R.id.jaraktxt);
+                //TextView coordinattxt = findViewById(R.id.jaraktxt);
 
                 origin = fromLngLat(origin.longitude(),origin.latitude());
                 destinationMarker = mapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
@@ -226,23 +226,8 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
 
                 //awal = Point.fromLngLat(origin.longitude(),origin.latitude());
                 //menghitung jarak lurus dari lokasi pengguna ke titik lain (tujuan)
-                jarak = TurfMeasurement.distance(origin,tujuan);
-                //FirebaseDatabase.getInstance().getReference("node").child("B1").child("jarak").setValue(String.format("100"));
-                //FirebaseDatabase.getInstance().getReference("isoman").child("5").child("jarak").setValue(String.format("%.2f",jarak));
-                //FirebaseDatabase.getInstance().getReference("node").child("1").child("friday").child("0").setValue("10");
-
-
-
-                coordinattxt.setText(Html.fromHtml("<font color='#6200EE'><b>straight line :</b><br></font>" + String.format("%.2f",jarak)+ "km"));
-                //pengaturan hari - jam
-                Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
-                SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("HH"); //format 24 jam
-                String jam = simpleDateFormat2.format(calendar.getTime());
-                String hari = simpleDateFormat.format(calendar.getTime());
-                TextView textViewDate = findViewById(R.id.textViewdate);
-                textViewDate.setText(hari);
-
+                //jarak = TurfMeasurement.distance(origin,tujuan);
+                //coordinattxt.setText(Html.fromHtml("<font color='#6200EE'><b>straight line :</b><br></font>" + String.format("%.2f",jarak)+ "km"));
 
 
                 //coordinattxt.setText((int) jarak);

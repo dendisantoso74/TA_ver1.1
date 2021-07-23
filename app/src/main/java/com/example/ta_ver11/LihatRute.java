@@ -177,7 +177,7 @@ public class LihatRute extends AppCompatActivity {
                 jamfirebase = "13";
             }else if (jam.equals("20")){
                 jamfirebase = "14";
-            }else if (jam.equals("00")){
+            }else if (jam.equals("23")){
                 jamfirebase = "15";
             }
 
