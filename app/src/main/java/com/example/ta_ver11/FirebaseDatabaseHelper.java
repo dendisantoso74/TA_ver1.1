@@ -30,7 +30,7 @@ public class FirebaseDatabaseHelper {
     }
 
     public void readLokasis(final DataStatus dataStatus){
-        mReferenceLokasi.orderByChild("jarak").addValueEventListener(new ValueEventListener() {
+        mReferenceLokasi.orderByChild("jarak").limitToFirst(10).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 lokasis.clear();

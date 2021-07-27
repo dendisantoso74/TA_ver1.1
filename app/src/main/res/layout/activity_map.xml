@@ -21,8 +21,9 @@
             android:id="@+id/jarakactualtxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="300dp"
             android:text="TextView"
-            android:layout_marginStart="300dp"/>
+            android:visibility="invisible" />
 
     </com.mapbox.mapboxsdk.maps.MapView>
 

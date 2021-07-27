@@ -69,7 +69,7 @@ public class LihatRute extends AppCompatActivity {
     private Double NJarak;
     private Double[] NilaiSAW;
     private Double Nsaw;
-    private Double sawTerpilih = 0.0;
+    private Double sawTerpilih = 10.0;
 
     private String InitialstateID;
     private String[] Nextstate;
@@ -90,6 +90,9 @@ public class LihatRute extends AppCompatActivity {
     private LocationManager locationManager;
     double lonGPS;
     double latGPS;
+
+    private Double[] actualCoast;
+    private Double aCost;
 
 
     @Override
@@ -177,7 +180,7 @@ public class LihatRute extends AppCompatActivity {
                 jamfirebase = "13";
             }else if (jam.equals("20")){
                 jamfirebase = "14";
-            }else if (jam.equals("23")){
+            }else if (jam.equals("02")){
                 jamfirebase = "15";
             }
 
@@ -218,7 +221,10 @@ public class LihatRute extends AppCompatActivity {
                     for (String state : node.getState()) {
                         data += "\n-" + state;
                     }
-
+                    for (Double jarakAsli : node.getJarakAsli()) {
+                        data += "\n-" + jarakAsli;
+                       // Log.d("jarakAsli", String.valueOf(jarakAsli));
+                    }
                     data += "\n\n";
 
 
@@ -231,7 +237,7 @@ public class LihatRute extends AppCompatActivity {
                     tujuan = Point.fromLngLat(lon, lat); //-6.128317253066011, 106.83302015898145
 
                     //menghitung jarak dari gps user ke semua node
-                    jarak = TurfMeasurement.distance(origin,tujuan);
+                    jarak = TurfMeasurement.distance(origin,tujuan); //luminor 106.8231926, -6.148533433
                     reff.child(documentId).child("jarak").setValue(jarak); //store jarak ke firebase
 
                     Log.d("logJarak", String.valueOf(jarak)+ " ID " +documentId);
@@ -254,30 +260,37 @@ public class LihatRute extends AppCompatActivity {
                 Log.d("Keluaran initial state",InitialstateID);
                 //InitialstateID = "B170";
 
-                ruteID = new  String[200];
+                ruteID = new  String[23];// pajang 23- isi 0-22
                 ruteID[0] =InitialstateID;
                 db.getReference("rute").child(String.valueOf(0)).setValue(ruteID[0]); //store firebase index 0
 
                 do{
                     Log.d("cek indeks sblm rute", String.valueOf(indexDO));
+                    Log.d("SAWterpilih", String.valueOf(sawTerpilih));
                     if (indexDO>0){
                         InitialstateID = sawTerpilihID;
                         macetTerkecil = 5.0;
                         jarakTerkecil = 500.0;
-                        sawTerpilih = 0.0;
+                        sawTerpilih = 10.0;
+                        // algo dendi sawTerpilih=10 mati karena perbandingan curent state harus lebih kecil dari next state
+                        //algo raka sawTerpilih=10 aktif karena perbandingan hanya antar next state
+
                     }
 
                     Integer jmlstate = (int) dataSnapshot.child(InitialstateID).child("state").getChildrenCount();
                     Log.d("Keluaran jumlah state", String.valueOf(jmlstate));
 
                     Nextstate = new String[jmlstate];
+                    actualCoast = new Double[jmlstate];
                     String nestate;
                     //store nexstate ke array Nstate
                     for (int i = 0; i < jmlstate; i++) {
                         nestate = dataSnapshot.child(InitialstateID).child("state").child(String.valueOf(i)).getValue().toString();
+                        aCost = (Double) dataSnapshot.child(InitialstateID).child("jarakAsli").child(String.valueOf(i)).getValue();
                         Nextstate[i] = nestate;
-
+                        actualCoast[i] = aCost;
                         Log.d("Nextstate" + i, String.valueOf(Nextstate[i]));
+                        Log.d("ActualCoast" + i, String.valueOf(actualCoast[i]));
                     }// end for nexstate
 
                     //mengambil data kemacetan dari firebase, simpan di array kemacetan
@@ -318,28 +331,14 @@ public class LihatRute extends AppCompatActivity {
                     }//end for jarak
 
                     // mengubah nilai dari rute sebelumnya agar tidak mengulang
-//                    if (indexDO>0){
-//
-//                        for (int z = 0; z < jmlstate; z++) {
-//                            if (Nextstate[z].equals(ruteID[indexDO - 1])) {
-//
-//                                jarakState[z] += 100.0;
-//
-//                            }
-//                            else {
-//                                //jarakState[z]+= 0.0;
-//
-//                            }
-//                        }
-//                    }//end if
-                    //edit
+
                     if (indexDO>0){
 
                         for (int z = 0; z < jmlstate; z++) {
                             for (int y =0;y<indexDO;y++) {
                                 if (Nextstate[z].equals(ruteID[y])) {
 
-                                    jarakState[z] += 1000.0;
+                                    jarakState[z] += 10.0;
 
                                 } else {
                                     //jarakState[z]+= 0.0;
@@ -351,38 +350,38 @@ public class LihatRute extends AppCompatActivity {
 
                     /**SAW******************************************/
                     //hitung kemacetan terkecil
-                    for (int l = 0; l < jmlstate; l++) {
-                        if (Double.compare(macetTerkecil, kemacetan[l]) == 0) {
-
-                            System.out.println("d1=d2" + " iterasike-"+l+": " + macetTerkecil);
-
-                        } else if (Double.compare(macetTerkecil, kemacetan[l]) < 0) {
-
-                            System.out.println("d1<d2" + " iterasike-"+ l +": " + macetTerkecil);
-
-                        } else {
-                            macetTerkecil = Double.valueOf(kemacetan[l]);
-                            System.out.println("d1>d2" + " iterasike-"+l + ": " + macetTerkecil);
-                        }
-                    }
+//                    for (int l = 0; l < jmlstate; l++) {
+//                        if (Double.compare(macetTerkecil, kemacetan[l]) == 0) {
+//
+//                            System.out.println("d1=d2" + " iterasike-"+l+": " + macetTerkecil);
+//
+//                        } else if (Double.compare(macetTerkecil, kemacetan[l]) < 0) {
+//
+//                            System.out.println("d1<d2" + " iterasike-"+ l +": " + macetTerkecil);
+//
+//                        } else {
+//                            macetTerkecil = Double.valueOf(kemacetan[l]);
+//                            System.out.println("d1>d2" + " iterasike-"+l + ": " + macetTerkecil);
+//                        }
+//                    }
 
                     //Hitung jarak terkecil
-                    for (int m = 0; m < jmlstate; m++) {
-                        if (Double.compare(jarakTerkecil, jarakState[m]) == 0) {
-
-                            //System.out.println("d1=d2" + " iterasike-"+m+": " + jarakTerkecil);
-
-                        } else if (Double.compare(jarakTerkecil, jarakState[m]) < 0) {
-
-                            //System.out.println("d1<d2" + " iterasike-"+ m +": " + jarakTerkecil);
-
-                        } else {
-                            jarakTerkecil = jarakState[m];
-                            //System.out.println("d1>d2" + " iterasike-"+m + ": " + jarakTerkecil);
-                        }
-                    }
-                    Log.d("terkecil jarak", String.valueOf(jarakTerkecil));
-                    Log.d("terkecil macet", String.valueOf(macetTerkecil));
+//                    for (int m = 0; m < jmlstate; m++) {
+//                        if (Double.compare(jarakTerkecil, jarakState[m]) == 0) {
+//
+//                            //System.out.println("d1=d2" + " iterasike-"+m+": " + jarakTerkecil);
+//
+//                        } else if (Double.compare(jarakTerkecil, jarakState[m]) < 0) {
+//
+//                            //System.out.println("d1<d2" + " iterasike-"+ m +": " + jarakTerkecil);
+//
+//                        } else {
+//                            jarakTerkecil = jarakState[m];
+//                            //System.out.println("d1>d2" + " iterasike-"+m + ": " + jarakTerkecil);
+//                        }
+//                    }
+//                    Log.d("terkecil jarak", String.valueOf(jarakTerkecil));
+//                    Log.d("terkecil macet", String.valueOf(macetTerkecil));
 
                     //normalisis dan pembobotan
                     NormMacet = new Double[jmlstate];
@@ -390,14 +389,19 @@ public class LihatRute extends AppCompatActivity {
                     NilaiSAW = new  Double[jmlstate];
                     //Log.d("cekSAW terbaik",sawTerpilihID);
                     for (int n = 0; n < jmlstate; n++){
-                        NJarak = jarakTerkecil / jarakState[n];
-                        NMacet = macetTerkecil / kemacetan[n];
+//                        NJarak = jarakTerkecil / jarakState[n]; //masuk normalisasi
+//                        NMacet = macetTerkecil / kemacetan[n];
+                        NJarak = jarakState[n]; //tanpa normalisasi
+                        NMacet = Double.valueOf(kemacetan[n]);
+
+
 
                         NormJarak[n] = NJarak;
                         NormMacet[n] = NMacet;
 
-                        Nsaw=((0.574 * NormJarak[n]) + (0.426 * NormMacet[n]));
-
+                        //Nsaw=((0.574 * NormJarak[n]) + (0.426 * NormMacet[n])); //masuk normalisasi
+                        //Nsaw=((0.9 * NormJarak[n]) + (0.1 * NormMacet[n])); //tanpa normalisasi dendi
+                        Nsaw=((0.9 * NormJarak[n]) + (0.1 * NormMacet[n])+actualCoast[n]); //tanpa normalisasi raka
                         NilaiSAW[n] = Nsaw;
                         Log.d("Normalisasi jarak"+n, String.valueOf(NormJarak[n]));
                         Log.d("Normalisasi macet"+n, String.valueOf(NormMacet[n]));
@@ -417,20 +421,25 @@ public class LihatRute extends AppCompatActivity {
                             //System.out.println("d1=d2" + " iterasike-"+o+": " + sawTerpilih);
 
                         } else if (Double.compare(sawTerpilih, NilaiSAW[o]) < 0) {
-                            sawTerpilih = NilaiSAW[o];
-                            sawTerpilihID = Nextstate[o];
+//                            sawTerpilih = NilaiSAW[o]; //masuk normalisasi
+//                            sawTerpilihID = Nextstate[o];
+
                             System.out.println("d1<d2" + " iterasike-"+ o +": " + sawTerpilih);
 
                         } else {
+                            sawTerpilih = NilaiSAW[o];//tanpa normalisasi
+                            sawTerpilihID = Nextstate[o];
 
-                            //System.out.println("d1>d2" + " iterasike-"+ o + ": " + sawTerpilih);
+                            System.out.println("d1>d2" + " iterasike-"+ o + ": " + sawTerpilih);
                         }
 
                     }//end for perbandingan SAW
                     data3 += "\nRute: " +indexDO+". "+ sawTerpilihID +" SAW:"+sawTerpilih;
 
                     ruteID[indexDO+1] =sawTerpilihID;
-                    Log.d("cek ruteID"+indexDO, ruteID[indexDO]);
+                    //rutePoint[indexDO+1] =
+                    Log.d("cekruteID"+indexDO, ruteID[indexDO]);
+
                     db.getReference("rute").child(String.valueOf(indexDO+1)).setValue(ruteID[indexDO+1]); //store rute ke firebase
                     indexDO++;
                     Log.d("StatusTRUE", String.valueOf(status));
@@ -440,10 +449,23 @@ public class LihatRute extends AppCompatActivity {
                 //while (indexDO < 9);
                 while (status==false);
 
+                Log.d("cekrute9"+indexDO, String.valueOf(ruteID.length));
+//                for (int q=indexDO+1;q<23;q++){
+//
+//                    ruteID[q] = ruteID[indexDO];
+//                    //iterasi 1 = ruteID[10] = ruteID[9]
+//                    //iterasi 2 = ruteID[11] = ruteID[9]
+//                    //iterasi 3 = ruteID[12] = ruteID[9]
+//                    //iterasi 4 = ruteID[13] = ruteID[9]
+//                    Log.d("logRuteIDArray",ruteID[q]);
+//                    Log.d("logRuteIDArray", String.valueOf(q));
+//                }
                 //textViewData.setText(data3);
             }
-        });
 
+        });
+        //db.getReference("rute2").setValue("coorNstate");
+        Log.d("tescoornstate", String.valueOf(coorNstate));
         //hitung actual cost
         Point tujuanAkhir=Point.fromLngLat(lonTujuan, latTujuan);
         Double ActualCost = TurfMeasurement.distance(origin,tujuanAkhir);
@@ -453,9 +475,12 @@ public class LihatRute extends AppCompatActivity {
        intent.putExtra("lon",String.valueOf(lonTujuan));
        intent.putExtra("lat",String.valueOf(latTujuan));
        intent.putExtra("terdekat",terdekat);
+       //intent.putExtra("ruteID",ruteID);
        startActivity(intent);
 
        Log.d("actualCost", String.valueOf(ActualCost));
+
+
         //Toast.makeText(mContext,"Tujuan: " + mNama.getText(), Toast.LENGTH_SHORT).show();
 
     }

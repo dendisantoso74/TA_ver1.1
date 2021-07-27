@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
@@ -81,17 +84,25 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
     private double distance;
 
     private CoordinateContainer from;
-
     private CoordinateContainer to;
 
     private Point tujuan;
     private Point awal;
 
     private String namadb;
-
     private String terdekat;
 
+    private String[] ruteID;
+    private Integer index=0;
+    private Point[] waypoint;
+    private Double[] latRute;
+    private Double[] lonRute;
+    private Point waypoint1=Point.fromLngLat(106.8271849841787,-6.175307062883577);
+    //private Point waypoint  =Point.fromLngLat(106.8271849841787,-6.175307062883577);
 
+    private FirebaseDatabase db = FirebaseDatabase.getInstance();
+    //private CollectionReference notebookRef = db.collection("Notebook");
+   // private DatabaseReference reff = FirebaseDatabase.getInstance().getReference("node");
 
 
     @Override
@@ -101,40 +112,18 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
 
         setContentView(R.layout.activity_map);
-
-//        TextView coordinattxt = findViewById(R.id.jaraktxt);
-        //String coor = "-6.1217, 106.7324";
-
         Bundle extras = getIntent().getExtras();
         if(extras != null){
             //coor = extras.getString("coordinat");
             lat = Double.parseDouble(extras.getString("lat"));
             lon = Double.parseDouble(extras.getString("lon"));
             terdekat = extras.getString("terdekat");
-            Log.d("tesTerdekat", String.valueOf(terdekat));
 
         }
 
+
         tujuan = Point.fromLngLat(lon,lat);
-        //awal = Point.fromLngLat(origin.longitude(),origin.latitude());
-
-//        origin = fromLngLat(origin.longitude(),origin.latitude());
-        //var distance = turf.distance(to, from, options);
-        //jarak = TurfMeasurement.distance(TOWER_BRIDGE,tujuan);
-//
-//        from = turf.point([-75.343, 39.984]);
-//        to = turf.point([-75.534, 39.123]);
-//        //options = {units: 'miles'};
-//
-//        distance = turf.distance(from, to, options);
-        //distance = (Math.sqrt(((lat-origin.latitude())*(lat-origin.latitude()))+((lon-origin.longitude())*(lon-origin.longitude())))*111.319);
-
-        //coordinattxt.setText(or);
-//        coordinattxt.setText(Html.fromHtml("<font color='#6200EE'><b>Jarak :</b><br></font>" + String.format("%.2f",jarak)+ "km"));
-
-
         mapView = (MapView) findViewById(R.id.mapView);
-
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         BtnStart = findViewById(R.id.btnStart);
@@ -155,8 +144,6 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                 }
             }
         });
-
-
 
     }
 
@@ -206,9 +193,13 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
             finish();
         }
     }
+//end permision
 
     @Override
     public void onMapReady(@NonNull MapboxMap mapboxMap) {
+
+
+
         this.mapboxMap = mapboxMap;
 
         mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded(){
@@ -218,43 +209,67 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                 enableLocationComponent(style);
                 //TextView coordinattxt = findViewById(R.id.jaraktxt);
 
+//                ////////////////////baca firebase////////////////////////////
+//                FirebaseDatabase.getInstance().getReference("rute").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DataSnapshot dataSnapshot) {
+//                        String data = "";
+//                        Integer jmlrute = (int) dataSnapshot.getChildrenCount();
+//                        ruteID = new String[jmlrute];
+//                        Log.d("LogjmlRute", String.valueOf(jmlrute));
+//                        for (DataSnapshot keyNode : dataSnapshot.getChildren()){
+//
+//                            ruteID[index] = dataSnapshot.child(String.valueOf(index)).getValue().toString();//B199
+//                            //Log.d("logDB", ruteID[index]);
+//                            index= index+1;
+//                            //String c = dataSnapshot.child("node").child(ruteID[index]).child("lat").getValue().toString();
+//                        }
+//
+//                        Log.d("logini","masuk");
+//                    }
+//                });
+//
+//
+////                FirebaseDatabase.getInstance().getReference("node").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+////                    @Override
+////                    public void onSuccess(DataSnapshot dataSnapshot) {
+////                        //Log.d("logDB", ruteID[index]);
+////                        //waypoint = new Point[10];
+////                        //latRute = new Double[10];
+////                        //lonRute = new Double[10];
+////                        for (int j=0;j<10;j++){
+////                            String c = dataSnapshot.child(ruteID[j]).child("lat").getValue().toString();
+////                            String d = dataSnapshot.child(ruteID[j]).child("lon").getValue().toString();
+////
+////                            //latRute[j] = Double.valueOf(c);
+////                            //lonRute[j] = Double.valueOf(d);
+////                            Double x = Double.valueOf(c);
+////                            Double y = Double.valueOf(d);
+////
+////                            waypoint1 = Point.fromLngLat(y,x);
+////                            //Log.d("LogDB", String.valueOf(waypoint[j]));
+////
+////                            //private Point monas =Point.fromLngLat(106.8271849841787,-6.175307062883577);
+////                        }
+////                        //Log.d("ArrayLogDB", String.valueOf(waypoint1));
+////                    }
+////                });
+//
+//                ///////////////////////end baca firebase/////////////////////
+
                 origin = fromLngLat(origin.longitude(),origin.latitude());
                 destinationMarker = mapboxMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
                 destination = fromLngLat(lon, lat);
                 BtnStart.setEnabled(true);
+                //Log.d("ArrayLogDB", String.valueOf(waypoint1));
+                //Log.d("logDB", ruteID[1]);
+                //Log.d("logDB", ruteID[1]);
                 getRoute(origin,destination);
 
-                //awal = Point.fromLngLat(origin.longitude(),origin.latitude());
-                //menghitung jarak lurus dari lokasi pengguna ke titik lain (tujuan)
-                //jarak = TurfMeasurement.distance(origin,tujuan);
-                //coordinattxt.setText(Html.fromHtml("<font color='#6200EE'><b>straight line :</b><br></font>" + String.format("%.2f",jarak)+ "km"));
-
-
-                //coordinattxt.setText((int) jarak);
-                //initLayers(style);
-
-//                mapboxMap.addOnMapClickListener(new MapboxMap.OnMapClickListener() {
-//                    @Override
-//                    public boolean onMapClick(@NonNull LatLng point) {
-//                        if(destinationMarker != null) {
-//                            mapboxMap.removeMarker(destinationMarker);
-//                        }
-//                        destinationMarker = mapboxMap.addMarker(new MarkerOptions().position(new LatLng(-6.171599675110603, 106.8376071052925)));
-//                        destination = Point.fromLngLat(106.8376071052925, -6.171599675110603);
-//                        origin = Point.fromLngLat(origin.longitude(),origin.latitude());
-//                        BtnStart.setEnabled(true);
-//                        BtnStart.setBackgroundResource(R.color.mapbox_blue);
-//
-//                        getRoute(origin,destination);
-//                        return true;
-//                    }
-//                });
             }
         });
 
     }
-
-
 
     //on start
     @Override
@@ -302,7 +317,6 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
     //navigation
     private void getNavigation(Point originL, Point destination) {
 
-
         NavigationRoute.builder(getApplicationContext())
                 .accessToken(getString(R.string.mapbox_access_token))
                 .origin(originL)
@@ -339,11 +353,37 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                 });
     }
 
+
     //routing
     private void getRoute(Point origin, Point destination) {
+        //Log.d("waypoint", String.valueOf(waypoint[0]));
         NavigationRoute.builder(this)
                 .accessToken(Mapbox.getAccessToken())
                 .origin(origin)
+                //.addWaypoint(Point.fromLngLat(106.8271849841787,-6.175307062883577)) //private Point monas =Point.fromLngLat(106.8271849841787,-6.175307062883577);
+//                .addWaypoint(waypoint1)//1
+//                .addWaypoint(Point.fromLngLat( 106.807969,-6.156489))//2
+//                .addWaypoint(Point.fromLngLat(106.807772,-6.152952 ))//3
+//                .addWaypoint(Point.fromLngLat(106.811788,-6.152182))//4
+//                .addWaypoint(Point.fromLngLat(106.811842,-6.151462 ))//5
+//                .addWaypoint(Point.fromLngLat( 106.811156,-6.147451))//6
+//                .addWaypoint(Point.fromLngLat( 106.811911,-6.141038))//7
+//                .addWaypoint(Point.fromLngLat(106.814622,-6.142136 ))//8
+//                .addWaypoint(Point.fromLngLat(106.815901, -6.145747))//9
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//10
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//11
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//12
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//13
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//14
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//15
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//16
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//17
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//18
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//19
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//20
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//21
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//22
+//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//23
                 .destination(destination)
                 .build()
                 .getRoute(new Callback<DirectionsResponse>() {
