@@ -362,16 +362,18 @@ public class map extends AppCompatActivity implements OnMapReadyCallback, Permis
                 .origin(origin)
                 //.addWaypoint(Point.fromLngLat(106.8271849841787,-6.175307062883577)) //private Point monas =Point.fromLngLat(106.8271849841787,-6.175307062883577);
 //                .addWaypoint(waypoint1)//1
-//                .addWaypoint(Point.fromLngLat( 106.807969,-6.156489))//2
-//                .addWaypoint(Point.fromLngLat(106.807772,-6.152952 ))//3
-//                .addWaypoint(Point.fromLngLat(106.811788,-6.152182))//4
-//                .addWaypoint(Point.fromLngLat(106.811842,-6.151462 ))//5
-//                .addWaypoint(Point.fromLngLat( 106.811156,-6.147451))//6
-//                .addWaypoint(Point.fromLngLat( 106.811911,-6.141038))//7
-//                .addWaypoint(Point.fromLngLat(106.814622,-6.142136 ))//8
-//                .addWaypoint(Point.fromLngLat(106.815901, -6.145747))//9
-//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//10
-//                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//11
+                .addWaypoint(Point.fromLngLat( 106.804166,-6.156796))//2
+                .addWaypoint(Point.fromLngLat( 106.807969,-6.156489 ))//3
+                .addWaypoint(Point.fromLngLat( 106.807772,-6.152952))//4
+                .addWaypoint(Point.fromLngLat(106.811788,-6.152182 ))//5
+                .addWaypoint(Point.fromLngLat(  106.811842, -6.151462))//6
+                .addWaypoint(Point.fromLngLat( 106.817043, -6.151411))//7
+                .addWaypoint(Point.fromLngLat(106.817154,-6.149971 ))//8 209
+//                .addWaypoint(Point.fromLngLat(   106.816415,-6.147441)) //b214
+//                .addWaypoint(Point.fromLngLat(106.81837,-6.146877))  //b213
+                .addWaypoint(Point.fromLngLat(106.818675,-6.149644))//9 211
+                .addWaypoint(Point.fromLngLat(106.820422,-6.14949))//10
+                .addWaypoint(Point.fromLngLat( 106.824278,-6.148876))//11
 //                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//12
 //                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//13
 //                .addWaypoint(Point.fromLngLat(106.816415, -6.147441))//14

@@ -180,7 +180,7 @@ public class LihatRute extends AppCompatActivity {
                 jamfirebase = "13";
             }else if (jam.equals("20")){
                 jamfirebase = "14";
-            }else if (jam.equals("02")){
+            }else if (jam.equals("00")){
                 jamfirebase = "15";
             }
 
@@ -271,7 +271,7 @@ public class LihatRute extends AppCompatActivity {
                         InitialstateID = sawTerpilihID;
                         macetTerkecil = 5.0;
                         jarakTerkecil = 500.0;
-                        sawTerpilih = 10.0;
+                        //sawTerpilih = 10.0;
                         // algo dendi sawTerpilih=10 mati karena perbandingan curent state harus lebih kecil dari next state
                         //algo raka sawTerpilih=10 aktif karena perbandingan hanya antar next state
 
@@ -338,7 +338,7 @@ public class LihatRute extends AppCompatActivity {
                             for (int y =0;y<indexDO;y++) {
                                 if (Nextstate[z].equals(ruteID[y])) {
 
-                                    jarakState[z] += 10.0;
+                                   // jarakState[z] += 10.0; //algo raka
 
                                 } else {
                                     //jarakState[z]+= 0.0;
@@ -400,8 +400,8 @@ public class LihatRute extends AppCompatActivity {
                         NormMacet[n] = NMacet;
 
                         //Nsaw=((0.574 * NormJarak[n]) + (0.426 * NormMacet[n])); //masuk normalisasi
-                        //Nsaw=((0.9 * NormJarak[n]) + (0.1 * NormMacet[n])); //tanpa normalisasi dendi
-                        Nsaw=((0.9 * NormJarak[n]) + (0.1 * NormMacet[n])+actualCoast[n]); //tanpa normalisasi raka
+                        Nsaw=((0.9 * NormJarak[n]) + (0.1 * NormMacet[n])); //tanpa normalisasi dendi
+                        //Nsaw=((0.9 * NormJarak[n]) + (0.1 * NormMacet[n])+actualCoast[n]); //tanpa normalisasi raka
                         NilaiSAW[n] = Nsaw;
                         Log.d("Normalisasi jarak"+n, String.valueOf(NormJarak[n]));
                         Log.d("Normalisasi macet"+n, String.valueOf(NormMacet[n]));
