@@ -13,9 +13,10 @@
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        mapbox:mapbox_cameraTargetLat="-6.225305018486292"
-        mapbox:mapbox_cameraTargetLng="106.83912889402951"
-        mapbox:mapbox_cameraZoom="10" >
+        mapbox:mapbox_cameraTargetLat="-6.176446"
+        mapbox:mapbox_cameraTargetLng="106.747743"
+
+        mapbox:mapbox_cameraZoom="12" >
 
         <TextView
             android:id="@+id/jarakactualtxt"

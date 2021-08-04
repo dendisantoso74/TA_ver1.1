@@ -160,7 +160,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                             jarak = TurfMeasurement.distance(origin,tujuan);
                             FirebaseDatabase.getInstance().getReference("PCR").child(String.valueOf(documentId)).child("jarak").setValue(jarak); //store jarak ke firebase
 
-                            Log.d("logJarakHome", String.valueOf(jarak)+ " ID " +documentId);
+                            //Log.d("logJarakHome", String.valueOf(jarak)+ " ID " +documentId);
 
 
                         }
@@ -199,7 +199,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                             jarak = TurfMeasurement.distance(origin,tujuan);
                             FirebaseDatabase.getInstance().getReference("tcm").child(String.valueOf(documentId)).child("jarak").setValue(jarak); //store jarak ke firebase
 
-                            Log.d("logJarakHome", String.valueOf(jarak)+ " ID " +documentId);
+                            //Log.d("logJarakHome", String.valueOf(jarak)+ " ID " +documentId);
 
 
                         }
@@ -243,7 +243,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                             jarak = TurfMeasurement.distance(origin,tujuan);
                             FirebaseDatabase.getInstance().getReference("isoman").child(String.valueOf(documentId)).child("jarak").setValue(jarak); //store jarak ke firebase
 
-                            Log.d("logJarakHome", String.valueOf(jarak)+ " ID " +documentId);
+                            //Log.d("logJarakHome", String.valueOf(jarak)+ " ID " +documentId);
 
 
                         }
@@ -288,7 +288,7 @@ public class Home extends AppCompatActivity implements View.OnClickListener {
                             jarak = TurfMeasurement.distance(origin,tujuan);
                             FirebaseDatabase.getInstance().getReference("rumah_sakit").child(String.valueOf(documentId)).child("jarak").setValue(jarak); //store jarak ke firebase
 
-                            Log.d("logJarakHome", String.valueOf(jarak)+ " ID " +documentId);
+                            //Log.d("logJarakHome", String.valueOf(jarak)+ " ID " +documentId);
 
 
                         }

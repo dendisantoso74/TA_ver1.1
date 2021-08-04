@@ -93,6 +93,9 @@ public class LihatRute extends AppCompatActivity {
 
     private Double[] actualCoast;
     private Double aCost;
+    private Double Macetterbesar = 0.1;
+    private Double Jarakterbesar = 0.1;
+    private Double actualTerpilih = 0.0;
 
 
     @Override
@@ -178,9 +181,9 @@ public class LihatRute extends AppCompatActivity {
                 jamfirebase = "12";
             }else if (jam.equals("19")){
                 jamfirebase = "13";
-            }else if (jam.equals("20")){
-                jamfirebase = "14";
             }else if (jam.equals("00")){
+                jamfirebase = "15";
+            }else if (jam.equals("21")){
                 jamfirebase = "15";
             }
 
@@ -235,9 +238,10 @@ public class LihatRute extends AppCompatActivity {
                     //deklarasi origin dan tujuan
                     //106.74460242519883,-6.1387230632241065 /monas/106.82714206866876,-6.1753870622395635
                     tujuan = Point.fromLngLat(lon, lat); //-6.128317253066011, 106.83302015898145
-
+                    //Point B210 =Point.fromLngLat(106.824278, -6.148876);
+                    //Point B147 =Point.fromLngLat(106.735105, -6.18707);
                     //menghitung jarak dari gps user ke semua node
-                    jarak = TurfMeasurement.distance(origin,tujuan); //luminor 106.8231926, -6.148533433
+                    jarak = TurfMeasurement.distance(origin,tujuan); //
                     reff.child(documentId).child("jarak").setValue(jarak); //store jarak ke firebase
 
                     Log.d("logJarak", String.valueOf(jarak)+ " ID " +documentId);
@@ -271,6 +275,8 @@ public class LihatRute extends AppCompatActivity {
                         InitialstateID = sawTerpilihID;
                         macetTerkecil = 5.0;
                         jarakTerkecil = 500.0;
+                        Macetterbesar = 0.0;
+                        Jarakterbesar = 0.0;
                         //sawTerpilih = 10.0;
                         // algo dendi sawTerpilih=10 mati karena perbandingan curent state harus lebih kecil dari next state
                         //algo raka sawTerpilih=10 aktif karena perbandingan hanya antar next state
@@ -291,6 +297,9 @@ public class LihatRute extends AppCompatActivity {
                         actualCoast[i] = aCost;
                         Log.d("Nextstate" + i, String.valueOf(Nextstate[i]));
                         Log.d("ActualCoast" + i, String.valueOf(actualCoast[i]));
+
+                        actualCoast[i] = actualCoast[i] +actualTerpilih; //algo raka - actual cost total
+
                     }// end for nexstate
 
                     //mengambil data kemacetan dari firebase, simpan di array kemacetan
@@ -338,7 +347,8 @@ public class LihatRute extends AppCompatActivity {
                             for (int y =0;y<indexDO;y++) {
                                 if (Nextstate[z].equals(ruteID[y])) {
 
-                                   // jarakState[z] += 10.0; //algo raka
+                                    //jarakState[z] += 10.0; //algo raka
+                                    //actualCoast[z] += 3.0;
 
                                 } else {
                                     //jarakState[z]+= 0.0;
@@ -364,6 +374,40 @@ public class LihatRute extends AppCompatActivity {
 //                            System.out.println("d1>d2" + " iterasike-"+l + ": " + macetTerkecil);
 //                        }
 //                    }
+
+                    //hitung kemacetan terbesar
+                    for (int l = 0; l < jmlstate; l++) {
+                        if (Double.compare(Macetterbesar, kemacetan[l]) == 0) {
+
+                            System.out.println("d1=d2" + " iterasike-"+l+": " + Macetterbesar);
+
+                        } else if (Double.compare(Macetterbesar, kemacetan[l]) < 0) {
+                            Macetterbesar = Double.valueOf(kemacetan[l]);
+                            System.out.println("d1<d2" + " iterasike-"+ l +": " + Macetterbesar);
+
+                        } else {
+                            //macetTerkecil = Double.valueOf(kemacetan[l]);
+                            System.out.println("d1>d2" + " iterasike-"+l + ": " + Macetterbesar);
+                        }
+                    }
+
+                    //Hitung jarak Terbesar
+                    for (int m = 0; m < jmlstate; m++) {
+                        if (Double.compare(Jarakterbesar, jarakState[m]) == 0) {
+
+                            //System.out.println("d1=d2" + " iterasike-"+m+": " + jarakTerkecil);
+
+                        } else if (Double.compare(Jarakterbesar, jarakState[m]) < 0) {
+                            Jarakterbesar = jarakState[m];
+                            //System.out.println("d1<d2" + " iterasike-"+ m +": " + jarakTerkecil);
+
+                        } else {
+                            //jarakTerkecil = jarakState[m];
+                            //System.out.println("d1>d2" + " iterasike-"+m + ": " + jarakTerkecil);
+                        }
+                    }
+                    Log.d("terkecil jarak", String.valueOf(Jarakterbesar));
+                    Log.d("terkecil macet", String.valueOf(Macetterbesar));
 
                     //Hitung jarak terkecil
 //                    for (int m = 0; m < jmlstate; m++) {
@@ -391,8 +435,12 @@ public class LihatRute extends AppCompatActivity {
                     for (int n = 0; n < jmlstate; n++){
 //                        NJarak = jarakTerkecil / jarakState[n]; //masuk normalisasi
 //                        NMacet = macetTerkecil / kemacetan[n];
-                        NJarak = jarakState[n]; //tanpa normalisasi
-                        NMacet = Double.valueOf(kemacetan[n]);
+
+                        NJarak = jarakState[n]/Jarakterbesar; //masuk normalisasi baru
+                        NMacet = kemacetan[n]/Macetterbesar; //masuk normalisasi baru
+
+//                        NJarak = jarakState[n]; //tanpa normalisasi
+//                        NMacet = Double.valueOf(kemacetan[n]); //tanpa normalisasi
 
 
 
@@ -400,12 +448,14 @@ public class LihatRute extends AppCompatActivity {
                         NormMacet[n] = NMacet;
 
                         //Nsaw=((0.574 * NormJarak[n]) + (0.426 * NormMacet[n])); //masuk normalisasi
-                        Nsaw=((0.9 * NormJarak[n]) + (0.1 * NormMacet[n])); //tanpa normalisasi dendi
-                        //Nsaw=((0.9 * NormJarak[n]) + (0.1 * NormMacet[n])+actualCoast[n]); //tanpa normalisasi raka
+                        Nsaw=((0.8 * NormJarak[n]) + (0.2 * NormMacet[n])); //tanpa normalisasi dendi
+                        //Nsaw=((0.60 * NormJarak[n]) + (0.40 * NormMacet[n])+actualCoast[n]); //tanpa normalisasi raka
                         NilaiSAW[n] = Nsaw;
                         Log.d("Normalisasi jarak"+n, String.valueOf(NormJarak[n]));
                         Log.d("Normalisasi macet"+n, String.valueOf(NormMacet[n]));
                         Log.d("BOBOT SAW"+n,Nextstate[n] +" - "+ String.valueOf(NilaiSAW[n]));
+                        Log.d("hasil actual cost"+n, Nextstate[n] +" - "+ String.valueOf(actualCoast[n]));
+
 
 
                     }//end for normalisasi dan pembobotan
@@ -429,6 +479,7 @@ public class LihatRute extends AppCompatActivity {
                         } else {
                             sawTerpilih = NilaiSAW[o];//tanpa normalisasi
                             sawTerpilihID = Nextstate[o];
+                            actualTerpilih = actualCoast[o]; // actual cost - raka
 
                             System.out.println("d1>d2" + " iterasike-"+ o + ": " + sawTerpilih);
                         }
@@ -437,6 +488,7 @@ public class LihatRute extends AppCompatActivity {
                     data3 += "\nRute: " +indexDO+". "+ sawTerpilihID +" SAW:"+sawTerpilih;
 
                     ruteID[indexDO+1] =sawTerpilihID;
+
                     //rutePoint[indexDO+1] =
                     Log.d("cekruteID"+indexDO, ruteID[indexDO]);
 
@@ -461,6 +513,7 @@ public class LihatRute extends AppCompatActivity {
 //                    Log.d("logRuteIDArray", String.valueOf(q));
 //                }
                 //textViewData.setText(data3);
+                //db.getReference("rute").child(String.valueOf(indexDO)).setValue(terdekat); //store rute ke firebase
             }
 
         });
@@ -476,6 +529,7 @@ public class LihatRute extends AppCompatActivity {
        intent.putExtra("lat",String.valueOf(latTujuan));
        intent.putExtra("terdekat",terdekat);
        //intent.putExtra("ruteID",ruteID);
+
        startActivity(intent);
 
        Log.d("actualCost", String.valueOf(ActualCost));
